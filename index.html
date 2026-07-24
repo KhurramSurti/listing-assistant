@@ -100,12 +100,6 @@ body{background:var(--ink);color:var(--snow);font-family:'Geist',sans-serif;font
 .img-urls-inp:focus{border-color:var(--teal);}
 .img-urls-inp::placeholder{color:var(--dim);}
 .img-urls-note{font-size:10px;color:var(--dim);margin-top:5px;line-height:1.5;}
-.img-up-row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap;}
-.img-up-btn{padding:9px 14px;border-radius:9px;border:1px solid var(--teal);background:rgba(45,212,191,0.08);color:var(--teal);font-family:'Geist',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all 0.18s;white-space:nowrap;}
-.img-up-btn:hover{background:rgba(45,212,191,0.15);}
-.imgbb-key-inp{flex:1;min-width:200px;background:var(--ink3);border:1px solid var(--wire);border-radius:8px;padding:9px 12px;color:var(--snow);font-family:'Geist Mono',monospace;font-size:10.5px;outline:none;}
-.imgbb-key-inp:focus{border-color:var(--teal);}
-.imgbb-key-inp::placeholder{color:var(--dim);}
 .brand-title-opt{display:flex;align-items:flex-start;gap:8px;margin-top:8px;font-size:11px;color:var(--mist);cursor:pointer;line-height:1.5;}
 .brand-title-opt input{margin-top:2px;accent-color:var(--gold);cursor:pointer;}
 .product-ta:focus{border-color:rgba(212,168,71,0.35);}
@@ -417,12 +411,7 @@ Free Shipping: No hidden fees.
     </div>
     <div class="comp-title-wrap">
       <div class="comp-title-lbl">🖼 Product Image URLs <span style="color:var(--dim);font-weight:400;">(optional — one per line, max 4; first = main hero image)</span></div>
-      <textarea class="img-urls-inp" id="imgUrls" placeholder="Paste image links in ANY format (direct / HTML / BBCode)... ya neeche Upload button use karein" oninput="onImagesInput()"></textarea>
-      <div class="img-up-row">
-        <input type="file" id="imgFiles" accept="image/png,image/jpeg,image/webp" multiple style="display:none" onchange="uploadImagesToHost(this.files)"/>
-        <button class="img-up-btn" onclick="document.getElementById('imgFiles').click()">📤 Upload Images (PNG/JPG)</button>
-        <input type="text" class="imgbb-key-inp" id="imgbbKey" placeholder="imgbb API key — free, one time (api.imgbb.com)" oninput="saveImgbbKey()"/>
-      </div>
+      <textarea class="img-urls-inp" id="imgUrls" placeholder="Paste image links in ANY format (direct / HTML / BBCode / plain URL)" oninput="onImagesInput()"></textarea>
       <div class="img-urls-note" id="imgUrlsNote"></div>
     </div>
     <div class="kw-found" id="kwFound"></div>
@@ -509,7 +498,6 @@ window.onload=function(){
     var _led=document.getElementById('keyLed'); if(_led)_led.classList.add('on');
     var _kw=document.querySelector('.key-wrap'); if(_kw)_kw.style.display='none';
   }
-  var savedImgbb=localStorage.getItem('slf_imgbb'); if(savedImgbb){var ik=document.getElementById('imgbbKey'); if(ik) ik.value=savedImgbb;}
   var k=localStorage.getItem('slf_gk'); if(k){document.getElementById('apiKey').value=k;onKey();}
   var th=localStorage.getItem('slf_th')||'auto'; theme=th;
   (function(){
@@ -702,58 +690,6 @@ function resolveTheme(t){
   return d.theme;
 }
 
-// ══ IN-TOOL IMAGE UPLOAD (via user's free imgbb API key) ══════
-function saveImgbbKey(){
-  var k=(document.getElementById('imgbbKey').value||'').trim();
-  localStorage.setItem('slf_imgbb', k);
-}
-function uploadImagesToHost(files){
-  var note=document.getElementById('imgUrlsNote');
-  var key=(document.getElementById('imgbbKey').value||'').trim() || localStorage.getItem('slf_imgbb') || '';
-  if(!key){
-    if(note){note.innerHTML='⚠ Pehle imgbb API key lagayein (bilkul free): <b>api.imgbb.com</b> kholें → free account banayein → "Add API key" → key copy karke yahan paste karein. Ek hi baar karna hai — save ho jayegi.'; note.style.color='#fbbf24';}
-    return;
-  }
-  var existing=getProductImages();
-  var room=4-existing.length;
-  if(room<=0){ if(note){note.textContent='⚠ 4 images ki limit already poori hai — pehle koi link hatayein'; note.style.color='#fbbf24';} return; }
-  var list=Array.prototype.slice.call(files).slice(0,room);
-  if(list.length===0) return;
-  var done=0, failed=0;
-  if(note){note.textContent='⏳ Uploading '+list.length+' image'+(list.length>1?'s':'')+'... (0/'+list.length+')'; note.style.color='var(--fog)';}
-  list.forEach(function(file){
-    if(file.size>16*1024*1024){ failed++; done++; return; }
-    var rd=new FileReader();
-    rd.onload=function(){
-      var b64=String(rd.result).split(',')[1];
-      var fd=new FormData();
-      fd.append('key', key);
-      fd.append('image', b64);
-      fetch('https://api.imgbb.com/1/upload', {method:'POST', body:fd})
-        .then(function(r){return r.json();})
-        .then(function(j){
-          done++;
-          if(j && j.success && j.data && (j.data.url||j.data.display_url)){
-            var url=j.data.url||j.data.display_url;
-            var ta=document.getElementById('imgUrls');
-            ta.value=(ta.value.trim()? ta.value.trim()+'\n':'')+url;
-            onImagesInput();
-          } else { failed++; }
-          if(note){
-            if(done<list.length){ note.textContent='⏳ Uploading... ('+done+'/'+list.length+')'; }
-            else if(failed===0){ note.textContent='✓ '+list.length+' image'+(list.length>1?'s':'')+' uploaded & added — HTML mein live'; note.style.color='var(--teal)'; }
-            else { note.textContent='⚠ '+(list.length-failed)+' uploaded, '+failed+' failed — key sahi hai? (api.imgbb.com se dobara check karein)'; note.style.color='#fbbf24'; }
-          }
-        })
-        .catch(function(){
-          done++; failed++;
-          if(note && done>=list.length){ note.textContent='⚠ Upload failed — internet ya API key check karein'; note.style.color='#fbbf24'; }
-        });
-    };
-    rd.readAsDataURL(file);
-  });
-}
-
 // ══ IMAGE → THEME COLOR MATCHING ══════════════════════════════
 // Reads the first product image's pixels and builds the whole HTML theme
 // from its dominant vibrant color (uses the existing Custom Color engine).
@@ -808,7 +744,7 @@ function matchImageColor(){
       setTheme('custom', document.getElementById('customThemeBtn'));
       if(note){note.textContent='✓ Theme matched to product image color ('+hex+') — HTML rebuilt free'; note.style.color='var(--teal)';}
     }catch(e){
-      if(note){note.textContent='⚠ Is image host ne color-reading ki ijazat nahi di (CORS) — postimages.org ya imgbb ki image try karein, ya Custom Color manually use karein'; note.style.color='#fbbf24';}
+      if(note){note.textContent='⚠ Is image host ne color-reading ki ijazat nahi di (CORS) — postimages.org ki image try karein, ya Custom Color manually use karein'; note.style.color='#fbbf24';}
     }
   };
   img.onerror=function(){
