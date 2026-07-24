@@ -1,0 +1,2445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FREE — Surti Listing Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#07070a; --ink2:#0f0f12; --ink3:#161619; --ink4:#1e1e23;
+  --wire:#28282f; --wire2:#333340; --dim:#55556a; --fog:#8888a0;
+  --mist:#b0b0c0; --snow:#ececf4; --white:#f8f8fc;
+  --gold:#d4a847; --gold2:#f0c060; --gold3:#a07828;
+  --teal:#2dd4bf; --rose:#fb7185; --violet:#a78bfa;
+  --shopify:#96bf48; --shopify2:#c8f07a;
+  --seo:#f472b6; --seo2:#fda4af;
+  --r:10px; --r2:16px; --r3:22px;
+  /* design-style tokens (swapped by the design switcher) */
+  --card-shadow:none;
+  --card-glow:none;
+  --panel-blur:blur(0px);
+  --topbar-bg:rgba(7,7,10,0.92);
+  --card-gradient:none;
+  --border-glow:none;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--snow);font-family:'Geist',sans-serif;font-size:13px;line-height:1.6;min-height:100vh;overflow-x:hidden;}
+.amb1{position:fixed;top:-15vh;left:-10vw;width:55vw;height:55vh;background:radial-gradient(ellipse,rgba(212,168,71,0.055) 0%,transparent 68%);pointer-events:none;z-index:0;}
+.amb2{position:fixed;bottom:-20vh;right:-8vw;width:45vw;height:50vh;background:radial-gradient(ellipse,rgba(45,212,191,0.04) 0%,transparent 68%);pointer-events:none;z-index:0;}
+.app{position:relative;z-index:1;display:grid;grid-template-columns:280px 1fr;grid-template-rows:64px 1fr;height:100vh;overflow:hidden;}
+.topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:var(--topbar-bg);border-bottom:1px solid var(--wire);backdrop-filter:blur(24px);position:relative;z-index:100;}
+.wordmark{display:flex;flex-direction:column;gap:1px;}
+.wordmark-name{font-family:'Playfair Display',serif;font-style:italic;font-size:21px;font-weight:700;background:linear-gradient(90deg,#c8902a 0%,#f0c060 45%,#c8902a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.3px;line-height:1;}
+.wordmark-bar{width:36px;height:1.5px;background:var(--gold);margin-bottom:2px;}
+.wordmark-sub{font-family:'Geist',sans-serif;font-size:8.5px;font-weight:500;letter-spacing:4px;color:var(--dim);text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.key-wrap{display:flex;align-items:center;gap:9px;padding:7px 13px;background:var(--ink3);border:1px solid var(--wire);border-radius:9px;transition:border-color 0.2s;}
+.key-wrap:focus-within{border-color:rgba(212,168,71,0.4);}
+.key-led{width:6px;height:6px;border-radius:50%;background:var(--wire2);flex-shrink:0;transition:all 0.3s;}
+.key-led.on{background:var(--teal);box-shadow:0 0 7px rgba(45,212,191,0.5);}
+.key-inp{background:none;border:none;outline:none;color:var(--snow);font-family:'Geist Mono',monospace;font-size:11px;width:210px;}
+.key-inp::placeholder{color:var(--dim);}
+.s-chip{display:flex;align-items:center;gap:6px;padding:5px 13px;border-radius:20px;font-size:11px;font-weight:500;letter-spacing:0.03em;transition:all 0.3s;}
+.s-idle{background:rgba(85,85,106,0.15);color:var(--dim);border:1px solid var(--wire);}
+.s-work{background:rgba(212,168,71,0.1);color:var(--gold);border:1px solid rgba(212,168,71,0.25);}
+.s-done{background:rgba(45,212,191,0.1);color:var(--teal);border:1px solid rgba(45,212,191,0.25);}
+.s-err{background:rgba(251,113,133,0.1);color:var(--rose);border:1px solid rgba(251,113,133,0.25);}
+.sidebar{background:var(--ink2);border-right:1px solid var(--wire);padding:22px 18px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;height:calc(100vh - 64px);backdrop-filter:var(--panel-blur);}
+.sidebar::-webkit-scrollbar{width:0;}
+.sb-sec{display:flex;flex-direction:column;gap:8px;}
+.sb-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--dim);padding-bottom:6px;border-bottom:1px solid var(--wire);}
+.p-opts{display:flex;flex-direction:column;gap:3px;}
+.market-opts{display:flex;gap:6px;}
+.market-btn{flex:1;padding:9px 8px;border-radius:9px;background:var(--ink3);border:1px solid var(--wire);color:var(--fog);font-family:'Geist',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;}
+.market-btn:hover{border-color:var(--wire2);color:var(--mist);}
+.market-on{background:linear-gradient(135deg,var(--gold),var(--gold3));border-color:var(--gold);color:#1a1305;}
+.p-opt{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--r);border:1px solid transparent;background:transparent;color:var(--fog);font-family:'Geist',sans-serif;font-size:12px;cursor:pointer;transition:all 0.18s;text-align:left;width:100%;}
+.p-opt:hover{background:var(--ink3);color:var(--snow);}
+.p-opt.on{background:var(--ink4);border-color:var(--wire2);color:var(--snow);}
+.p-opt.on .p-em{color:var(--gold);}
+.p-em{font-size:13px;transition:color 0.18s;}
+.p-chk{margin-left:auto;width:15px;height:15px;border-radius:50%;background:var(--gold);display:none;align-items:center;justify-content:center;font-size:8px;color:var(--ink);font-weight:700;}
+.p-opt.on .p-chk{display:flex;}
+.th-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.th-opt{padding:9px 6px;border-radius:var(--r);border:1px solid var(--wire);background:var(--ink3);cursor:pointer;transition:all 0.18s;text-align:center;font-size:10px;color:var(--fog);}
+.th-opt:hover{border-color:rgba(212,168,71,0.4);color:var(--snow);}
+.th-opt.on{border-color:var(--gold);background:rgba(212,168,71,0.07);color:var(--gold);}
+.th-sw{height:24px;border-radius:5px;margin-bottom:5px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.kw-list{display:flex;flex-direction:column;gap:3px;}
+.kw-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:7px;background:var(--ink3);border:1px solid var(--wire);font-size:11px;color:var(--fog);transition:all 0.25s;}
+.kw-row.kw-ok{border-color:rgba(45,212,191,0.25);color:var(--teal);background:rgba(45,212,191,0.04);}
+.kw-row.kw-go{border-color:rgba(212,168,71,0.25);color:var(--gold);}
+.kw-row.kw-no{opacity:0.35;}
+.kw-nm{display:flex;align-items:center;gap:6px;}
+.kw-d{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.kw-d.sp{animation:kblink 0.9s ease infinite;}
+@keyframes kblink{0%,100%{opacity:1;}50%{opacity:0.15;}}
+.kw-ct{font-family:'Geist Mono',monospace;font-size:10px;}
+.sb-inp{width:100%;background:var(--ink3);border:1px solid var(--wire);border-radius:var(--r);padding:9px 11px;color:var(--snow);font-family:'Geist',sans-serif;font-size:12px;outline:none;transition:border-color 0.2s;}
+.sb-inp:focus{border-color:rgba(212,168,71,0.35);}
+.sb-inp::placeholder{color:var(--dim);}
+.sb-ta{width:100%;background:var(--ink3);border:1px solid var(--wire);border-radius:var(--r);padding:10px 11px;color:var(--snow);font-family:'Geist Mono',monospace;font-size:10px;line-height:1.65;resize:vertical;outline:none;transition:border-color 0.2s;}
+.sb-ta:focus{border-color:rgba(212,168,71,0.35);}
+.theme-section{transition:opacity 0.2s;}
+.theme-section.hidden{opacity:0.25;pointer-events:none;}
+.main{display:flex;flex-direction:column;height:calc(100vh - 64px);overflow-y:auto;}
+.input-zone{padding:24px 28px 18px;border-bottom:1px solid var(--wire);flex-shrink:0;}
+.iz-head{margin-bottom:12px;}
+.iz-title{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--white);margin-bottom:2px;}
+.iz-sub{font-size:11px;color:var(--dim);}
+.product-ta{width:100%;background:var(--ink3);background-image:var(--card-gradient);border:1px solid var(--wire);border-radius:var(--r2);padding:15px 17px;color:var(--snow);font-family:'Geist Mono',monospace;font-size:11.5px;line-height:1.75;resize:none;height:120px;outline:none;transition:border-color 0.2s;box-shadow:var(--card-shadow);}
+.comp-title-wrap{margin-top:12px;}
+.comp-title-lbl{font-size:11px;color:var(--mist);font-weight:600;margin-bottom:7px;}
+.comp-title-inp{width:100%;background:var(--ink3);border:1px solid rgba(96,165,250,0.3);border-radius:var(--r);padding:11px 15px;color:var(--snow);font-family:'Geist Mono',monospace;font-size:11.5px;outline:none;transition:border-color 0.2s;}
+.comp-title-inp:focus{border-color:#60a5fa;}
+.comp-title-inp::placeholder{color:var(--dim);}
+.img-urls-inp{width:100%;background:var(--ink3);border:1px solid rgba(45,212,191,0.3);border-radius:var(--r);padding:11px 15px;color:var(--snow);font-family:'Geist Mono',monospace;font-size:11px;line-height:1.7;outline:none;resize:none;height:64px;transition:border-color 0.2s;}
+.img-urls-inp:focus{border-color:var(--teal);}
+.img-urls-inp::placeholder{color:var(--dim);}
+.img-urls-note{font-size:10px;color:var(--dim);margin-top:5px;line-height:1.5;}
+.img-up-row{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap;}
+.img-up-btn{padding:9px 14px;border-radius:9px;border:1px solid var(--teal);background:rgba(45,212,191,0.08);color:var(--teal);font-family:'Geist',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all 0.18s;white-space:nowrap;}
+.img-up-btn:hover{background:rgba(45,212,191,0.15);}
+.imgbb-key-inp{flex:1;min-width:200px;background:var(--ink3);border:1px solid var(--wire);border-radius:8px;padding:9px 12px;color:var(--snow);font-family:'Geist Mono',monospace;font-size:10.5px;outline:none;}
+.imgbb-key-inp:focus{border-color:var(--teal);}
+.imgbb-key-inp::placeholder{color:var(--dim);}
+.brand-title-opt{display:flex;align-items:flex-start;gap:8px;margin-top:8px;font-size:11px;color:var(--mist);cursor:pointer;line-height:1.5;}
+.brand-title-opt input{margin-top:2px;accent-color:var(--gold);cursor:pointer;}
+.product-ta:focus{border-color:rgba(212,168,71,0.35);}
+.product-ta::placeholder{color:var(--dim);font-size:11px;}
+.kw-found{display:none;margin-top:10px;padding:10px 13px;background:rgba(45,212,191,0.04);border:1px solid rgba(45,212,191,0.15);border-radius:var(--r);}
+.kw-found.show{display:block;}
+.kw-ft{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--teal);font-weight:600;margin-bottom:6px;}
+.kw-pill{display:inline-block;padding:2px 7px;margin:2px 2px 2px 0;background:rgba(45,212,191,0.07);border:1px solid rgba(45,212,191,0.18);border-radius:4px;font-size:10px;color:#5eead4;font-family:'Geist Mono',monospace;}
+.act-row{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.gen-btn{display:flex;align-items:center;gap:9px;padding:11px 26px;background:linear-gradient(135deg,var(--gold),#b88020);border:none;border-radius:var(--r);color:var(--ink);font-family:'Geist',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.01em;box-shadow:0 3px 18px rgba(212,168,71,0.22);}
+.gen-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 7px 26px rgba(212,168,71,0.38);}
+.gen-btn:disabled{opacity:0.38;cursor:not-allowed;transform:none;box-shadow:none;}
+.seo-btn{display:flex;align-items:center;gap:9px;padding:11px 20px;background:linear-gradient(135deg,rgba(244,114,182,0.15),rgba(244,114,182,0.08));border:1px solid rgba(244,114,182,0.4);border-radius:var(--r);color:var(--seo);font-family:'Geist',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.seo-btn:hover:not(:disabled){background:rgba(244,114,182,0.2);transform:translateY(-1px);}
+.seo-btn:disabled{opacity:0.38;cursor:not-allowed;transform:none;}
+.clr-btn{padding:10px 16px;background:transparent;border:1px solid var(--wire);border-radius:var(--r);color:var(--fog);font-family:'Geist',sans-serif;font-size:12px;cursor:pointer;transition:all 0.18s;}
+.clr-btn:hover{border-color:var(--rose);color:var(--rose);}
+.char-ct{margin-left:auto;font-size:10px;color:var(--dim);font-family:'Geist Mono',monospace;}
+.spinner{width:14px;height:14px;border:2px solid rgba(7,7,10,0.3);border-top-color:var(--ink);border-radius:50%;animation:spin 0.6s linear infinite;display:none;}
+.spinner-pink{width:14px;height:14px;border:2px solid rgba(244,114,182,0.3);border-top-color:var(--seo);border-radius:50%;animation:spin 0.6s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.err-bar{display:none;margin-top:9px;padding:9px 13px;background:rgba(251,113,133,0.07);border:1px solid rgba(251,113,133,0.22);border-radius:var(--r);color:var(--rose);font-size:11px;}
+.prog{display:none;margin-top:12px;padding:12px 14px;background:var(--ink3);border:1px solid var(--wire);border-radius:var(--r);}
+.prog.show{display:block;}
+.prog-steps{display:flex;align-items:center;gap:0;}
+.ps{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--dim);flex:1;padding-right:8px;}
+.ps::after{content:'→';margin-left:auto;color:var(--wire2);font-size:11px;}
+.ps:last-child::after{display:none;}
+.ps.done{color:var(--teal);}
+.ps.act{color:var(--gold);}
+.ps-ic{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--ink4);border:1px solid var(--wire);font-size:9px;flex-shrink:0;font-family:'Geist Mono',monospace;}
+.ps.done .ps-ic{background:rgba(45,212,191,0.14);border-color:var(--teal);}
+.ps.act .ps-ic{background:rgba(212,168,71,0.14);border-color:var(--gold);animation:pulse 1s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.45;}}
+.output{display:none;flex-shrink:0;}
+.output.show{display:block !important;}
+.out-split{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 64px);}
+.out-split.shopify-only{grid-template-columns:1fr;}
+.out-split.seo-only{grid-template-columns:1fr;}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px;}
+.empty-ic{width:60px;height:60px;border-radius:14px;background:var(--ink3);border:1px solid var(--wire);display:flex;align-items:center;justify-content:center;font-size:26px;opacity:0.5;}
+.empty-t{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--mist);}
+.empty-s{font-size:12px;color:var(--dim);text-align:center;max-width:240px;line-height:1.65;}
+.l-pane{border-right:1px solid var(--wire);display:flex;flex-direction:column;overflow:hidden;height:calc(100vh - 64px);position:sticky;top:0;}
+.l-pane.full-width{border-right:none;}
+.pane-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--wire);flex-shrink:0;background:rgba(7,7,10,0.7);}
+.pane-ttl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--fog);}
+.pane-acts{display:flex;gap:6px;}
+.stabs{display:flex;gap:2px;padding:9px 14px;border-bottom:1px solid var(--wire);flex-shrink:0;overflow-x:auto;scrollbar-width:none;background:rgba(7,7,10,0.4);}
+.stabs::-webkit-scrollbar{display:none;}
+.stab{padding:5px 11px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--dim);font-family:'Geist',sans-serif;font-size:10px;font-weight:500;cursor:pointer;transition:all 0.14s;white-space:nowrap;letter-spacing:0.02em;}
+.stab:hover{color:var(--fog);}
+.stab.on{background:var(--ink4);border-color:var(--wire2);color:var(--snow);}
+.stab.shopify-tab{border-color:rgba(150,191,72,0.3);color:var(--shopify);}
+.stab.shopify-tab.on{background:rgba(150,191,72,0.09);border-color:var(--shopify);color:var(--shopify2);}
+.stab.seo-tab{border-color:rgba(244,114,182,0.3);color:var(--seo);}
+.stab.seo-tab.on{background:rgba(244,114,182,0.09);border-color:var(--seo);color:var(--seo2);}
+.sec-cnt{flex:1;overflow-y:auto;padding:16px 18px;}
+.sec-cnt::-webkit-scrollbar{width:3px;}
+.sec-cnt::-webkit-scrollbar-thumb{background:var(--wire);border-radius:3px;}
+.ssec{display:none;}
+.ssec.on{display:block;animation:fadeUp 0.28s cubic-bezier(0.22,0.61,0.36,1);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+/* Subtle professional animations */
+@keyframes slfFadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slfRise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slfPillIn{from{opacity:0;transform:translateY(4px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.slf-rise{animation:slfRise 0.4s cubic-bezier(0.22,0.61,0.36,1) both;}
+#output.show{animation:slfFadeIn 0.35s ease both;}
+.kw-pill{animation:slfPillIn 0.32s cubic-bezier(0.22,0.61,0.36,1) both;}
+.ob{animation:slfRise 0.34s cubic-bezier(0.22,0.61,0.36,1) both;}
+@media (prefers-reduced-motion: reduce){.slf-rise,#output.show,.kw-pill,.ob,.ssec.on{animation:none !important;}}
+.ob{background:var(--ink3);background-image:var(--card-gradient);border:1px solid var(--wire);border-radius:var(--r);overflow:hidden;margin-bottom:10px;box-shadow:var(--card-shadow);backdrop-filter:var(--panel-blur);}
+.ob-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--wire);background:rgba(255,255,255,0.018);}
+.ob-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.14em;}
+.c1{color:var(--gold);}.c2{color:var(--teal);}.c3{color:#c084fc;}.c4{color:#6ee7b7;}.c5{color:var(--rose);}.cS{color:var(--shopify);}.cP{color:var(--seo);}
+.ob-body{padding:12px;font-family:'Geist Mono',monospace;font-size:11.5px;line-height:1.8;color:var(--snow);white-space:pre-wrap;word-break:break-word;}
+.ob-body strong{color:var(--gold2);font-weight:500;}
+.shopify-preview-box{background:var(--ink3);border:1px solid rgba(150,191,72,0.25);border-radius:var(--r2);overflow:hidden;margin-bottom:10px;}
+.shopify-preview-box .ob-hdr{border-color:rgba(150,191,72,0.2);background:rgba(150,191,72,0.04);}
+.shopify-copy-area{padding:16px 18px;font-family:'Geist Mono',monospace;font-size:11px;line-height:1.85;color:#c8d8b8;white-space:pre-wrap;word-break:break-word;background:transparent;}
+.shopify-banner{padding:10px 14px;background:rgba(150,191,72,0.06);border:1px solid rgba(150,191,72,0.2);border-radius:var(--r);font-size:11px;color:var(--shopify);margin-bottom:12px;line-height:1.5;}
+.shopify-banner strong{color:var(--shopify2);}
+/* SEO card styles */
+.seo-card{background:var(--ink3);border:1px solid rgba(244,114,182,0.2);border-radius:var(--r2);overflow:hidden;margin-bottom:12px;}
+.seo-card-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(244,114,182,0.15);background:rgba(244,114,182,0.04);}
+.seo-card-icon{font-size:18px;flex-shrink:0;}
+.seo-card-title{font-size:12px;font-weight:600;color:var(--seo2);}
+.seo-card-body{padding:14px 16px;}
+.seo-item{display:flex;flex-direction:column;gap:4px;padding:9px 0;border-bottom:1px solid var(--wire);}
+.seo-item:last-child{border-bottom:none;}
+.seo-item-label{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--seo);font-weight:600;}
+.seo-item-val{font-size:11.5px;color:var(--snow);line-height:1.6;font-family:'Geist Mono',monospace;}
+.seo-score{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;}
+.score-high{background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.25);}
+.score-med{background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);}
+.score-low{background:rgba(251,113,133,0.12);color:var(--rose);border:1px solid rgba(251,113,133,0.25);}
+.h-pane{display:flex;flex-direction:column;overflow:hidden;height:calc(100vh - 64px);position:sticky;top:0;}
+.vtabs{display:flex;gap:2px;padding:9px 14px;border-bottom:1px solid var(--wire);flex-shrink:0;background:rgba(7,7,10,0.4);}
+.vtab{padding:5px 13px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--dim);font-family:'Geist',sans-serif;font-size:10px;font-weight:500;cursor:pointer;transition:all 0.14s;}
+.vtab:hover{color:var(--fog);}
+.vtab.on{background:var(--ink4);border-color:var(--wire2);color:var(--snow);}
+.h-frame-w{flex:1;overflow:hidden;}
+.h-frame{width:100%;height:100%;border:none;background:#fff;display:block;}
+.h-src-w{flex:1;overflow-y:auto;display:none;}
+.h-src-w::-webkit-scrollbar{width:3px;}
+.h-src-w::-webkit-scrollbar-thumb{background:var(--wire);border-radius:3px;}
+.h-src{padding:15px;font-family:'Geist Mono',monospace;font-size:10.5px;line-height:1.7;color:#7a9ab8;white-space:pre;background:var(--ink);min-height:100%;}
+.ib{display:flex;align-items:center;gap:5px;padding:5px 11px;background:var(--ink4);border:1px solid var(--wire);border-radius:7px;color:var(--fog);font-family:'Geist',sans-serif;font-size:10px;font-weight:500;cursor:pointer;transition:all 0.14s;white-space:nowrap;}
+.ib:hover{border-color:var(--fog);color:var(--snow);}
+.ib.gold{border-color:rgba(212,168,71,0.35);color:var(--gold);}
+.ib.gold:hover{background:rgba(212,168,71,0.08);}
+.ib.teal{border-color:rgba(45,212,191,0.35);color:var(--teal);}
+.ib.teal:hover{background:rgba(45,212,191,0.07);}
+.ib.green{border-color:rgba(150,191,72,0.4);color:var(--shopify);}
+.ib.green:hover{background:rgba(150,191,72,0.08);}
+.ib.pink{border-color:rgba(244,114,182,0.4);color:var(--seo);}
+.ib.pink:hover{background:rgba(244,114,182,0.08);}
+.ib.cp{border-color:var(--teal);color:var(--teal);background:rgba(45,212,191,0.07);}
+/* ─── MOBILE MENU TOGGLE ─── */
+.menu-toggle{display:none;width:38px;height:38px;border-radius:9px;background:var(--ink3);border:1px solid var(--wire);color:var(--gold);font-size:18px;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;}
+.design-switch{display:flex;align-items:center;gap:3px;padding:3px;background:var(--ink3);border:1px solid var(--wire);border-radius:10px;}
+.ds-btn{padding:6px 13px;border-radius:7px;border:none;background:transparent;color:var(--fog);font-family:'Geist',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.ds-btn:hover{color:var(--mist);}
+.ds-on{background:linear-gradient(135deg,var(--gold),var(--gold3));color:#1a1305;box-shadow:0 2px 8px rgba(212,168,71,0.25);}
+.restore-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;background:var(--ink3);border:1px solid var(--wire2);border-radius:9px;color:var(--gold);font-family:'Geist',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;white-space:nowrap;}
+.restore-btn:hover{background:var(--ink4);border-color:var(--gold);transform:translateY(-1px);}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99;backdrop-filter:blur(3px);}
+.sidebar-overlay.show{display:block;}
+.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:200;backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;}
+.confirm-overlay.show{display:flex;animation:slfFadeIn 0.2s ease;}
+.confirm-box{background:var(--ink2);border:1px solid var(--wire2);border-radius:var(--r2);padding:28px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);animation:slfRise 0.28s cubic-bezier(0.22,0.61,0.36,1);}
+.confirm-icon{font-size:34px;margin-bottom:12px;}
+.confirm-title{font-size:18px;font-weight:700;color:var(--snow);margin-bottom:8px;}
+.confirm-msg{font-size:13px;color:var(--fog);line-height:1.6;margin-bottom:22px;}
+.confirm-btns{display:flex;gap:10px;}
+.confirm-no{flex:1;padding:12px;border-radius:var(--r);background:var(--ink4);border:1px solid var(--wire);color:var(--mist);font-family:'Geist',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;}
+.confirm-no:hover{background:var(--ink3);border-color:var(--wire2);}
+.confirm-yes{flex:1;padding:12px;border-radius:var(--r);background:linear-gradient(135deg,var(--gold),var(--gold3));border:none;color:#1a1305;font-family:'Geist',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;}
+.confirm-yes:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(212,168,71,0.3);}
+
+@media(max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-rows:58px 1fr;}
+  /* Sidebar becomes a slide-in drawer */
+  .sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:85vw;height:100vh;z-index:100;transform:translateX(-100%);transition:transform 0.28s ease;padding-top:20px;}
+  .sidebar.open{transform:translateX(0);box-shadow:0 0 40px rgba(0,0,0,0.5);}
+  .menu-toggle{display:flex;}
+  /* Topbar adjustments */
+  .topbar{padding:0 14px;gap:10px;}
+  .wordmark-name{font-size:17px;}
+  .wordmark-sub{font-size:7px;letter-spacing:2.5px;}
+  .key-wrap{padding:6px 10px;}
+  .key-inp{width:110px;font-size:10px;}
+  .s-chip{display:none;}
+  /* Output stacks vertically */
+  .out-split{grid-template-columns:1fr !important;}
+  .l-pane{border-right:none;border-bottom:1px solid var(--wire);height:auto;position:relative;max-height:none;}
+  .h-pane{height:auto;position:relative;}
+  .h-frame-w{min-height:500px;}
+  .l-pane .sec-cnt{max-height:600px;}
+  /* Input zone padding */
+  .input-zone{padding:18px 16px 14px;}
+  .iz-title{font-size:15px;}
+  /* Progress steps wrap */
+  .prog-steps{flex-wrap:wrap;gap:8px;}
+  .ps{flex:1 1 100%;}
+  .ps::after{display:none;}
+  /* Action buttons full width stack */
+  .act-row{flex-direction:column;align-items:stretch;}
+  .gen-btn,.seo-btn,.clr-btn{width:100%;justify-content:center;}
+  .char-ct{margin-left:0;text-align:center;margin-top:4px;}
+}
+
+@media(max-width:480px){
+  .topbar{height:54px;}
+  .wordmark-name{font-size:15px;}
+  .key-inp{width:80px;}
+  .menu-toggle{width:34px;height:34px;font-size:16px;}
+  .design-switch{display:none;}
+  .stab{font-size:9px;padding:5px 9px;}
+  .product-ta{height:140px;font-size:11px;}
+  .h-frame-w{min-height:420px;}
+}
+</style>
+</head>
+<body>
+<div class="amb1"></div><div class="amb2"></div>
+<div class="app">
+
+<header class="topbar">
+  <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">☰</button>
+  <div class="wordmark">
+    <div class="wordmark-bar"></div>
+    <div class="wordmark-name">Khurram Surti</div>
+    <div class="wordmark-sub">Surti Listing Forge · FREE Edition</div>
+  </div>
+  <div class="topbar-right">
+    <div class="design-switch" id="designSwitch" title="Change design style">
+      <button class="ds-btn ds-on" data-ds="glass" onclick="setDesign('glass')">Glass</button>
+      <button class="ds-btn" data-ds="clean" onclick="setDesign('clean')">Clean</button>
+      <button class="ds-btn" data-ds="rich" onclick="setDesign('rich')">Rich</button>
+    </div>
+    <div class="key-wrap">
+      <div class="key-led" id="keyLed"></div>
+      <input class="key-inp" type="password" id="apiKey" placeholder="Paste FREE Gemini API key (aistudio.google.com)..." oninput="onKey()"/>
+    </div>
+    <button class="restore-btn" id="restoreBtn" onclick="clearAndStartNew()" title="Clear saved work and start fresh" style="display:none;">↺ New</button>
+    <div class="s-chip s-idle" id="chip">Ready</div>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon" id="confirmIcon">⚠️</div>
+    <div class="confirm-title" id="confirmTitle">Are you sure?</div>
+    <div class="confirm-msg" id="confirmMsg">This will use your API credits.</div>
+    <div class="confirm-btns">
+      <button class="confirm-no" onclick="closeConfirm()">No, Cancel</button>
+      <button class="confirm-yes" id="confirmYesBtn" onclick="confirmProceed()">Yes, Continue</button>
+    </div>
+  </div>
+</div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-sec">
+    <div class="sb-lbl">Marketplace</div>
+    <div class="market-opts" id="marketOpts">
+      <button class="market-btn market-on" data-market="us" onclick="setMarket('us')">🇺🇸 US</button>
+      <button class="market-btn" data-market="gb" onclick="setMarket('gb')">🇬🇧 UK</button>
+      <button class="market-btn" data-market="au" onclick="setMarket('au')">🇦🇺 AU</button>
+    </div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-lbl">Platform</div>
+    <div class="p-opts" id="platOpts">
+      <button class="p-opt on" onclick="setPlatform('ebay',this)">
+        <span class="p-em">🏪</span><span>eBay Only</span><div class="p-chk">✓</div>
+      </button>
+      <button class="p-opt" onclick="setPlatform('tiktok',this)">
+        <span class="p-em">📱</span><span>TikTok Shop US</span><div class="p-chk">✓</div>
+      </button>
+      <button class="p-opt" onclick="confirmPlatform('shopify',this)">
+        <span class="p-em">🛍</span><span>Shopify Only</span><div class="p-chk">✓</div>
+      </button>
+      <button class="p-opt" id="seoSideBtn" onclick="confirmOffPage(this)">
+        <span class="p-em">🚀</span><span>Off-Page SEO</span><div class="p-chk">✓</div>
+      </button>
+    </div>
+  </div>
+  <div class="sb-sec theme-section" id="themeSection">
+    <div class="sb-lbl">HTML Theme <span style="font-size:8px;color:var(--dim);margin-left:4px;">(eBay only)</span></div>
+    <div class="th-grid" id="thGrid">
+      <button class="th-opt on" id="autoThemeBtn" onclick="setTheme('auto',this)" style="grid-column:1/-1;"><div class="th-sw" style="background:linear-gradient(135deg,#8b7cf8,#2dd4bf,#d4af37)">🪄</div>Auto (category-wise)</button>
+      <button class="th-opt" onclick="setTheme('heritage',this)"><div class="th-sw" style="background:linear-gradient(135deg,#4A6B3A,#B87B3A)">🌿</div>Heritage</button>
+      <button class="th-opt" onclick="setTheme('modern',this)"><div class="th-sw" style="background:linear-gradient(135deg,#1a1a2e,#7c6af7)">🌙</div>Modern</button>
+      <button class="th-opt" onclick="setTheme('clean',this)"><div class="th-sw" style="background:linear-gradient(135deg,#1a56db,#0891b2)">☀</div>Clean</button>
+      <button class="th-opt" onclick="setTheme('luxury',this)"><div class="th-sw" style="background:linear-gradient(135deg,#111,#d4af37)">✨</div>Luxury</button>
+      <button class="th-opt" onclick="setTheme('noir',this)"><div class="th-sw" style="background:linear-gradient(135deg,#000,#3a3a3a)">◼</div>Noir</button>
+      <button class="th-opt" onclick="setTheme('emerald',this)"><div class="th-sw" style="background:linear-gradient(135deg,#04281e,#10b981)">💎</div>Emerald</button>
+      <button class="th-opt" onclick="setTheme('ocean',this)"><div class="th-sw" style="background:linear-gradient(135deg,#051530,#06b6d4)">🌊</div>Ocean</button>
+      <button class="th-opt" onclick="setTheme('rose',this)"><div class="th-sw" style="background:linear-gradient(135deg,#fdf2f5,#e0447c)">🌸</div>Rosé</button>
+      <button class="th-opt" id="customThemeBtn" onclick="setTheme('custom',this)" style="grid-column:1/-1;"><div class="th-sw" id="customSwatch" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">🎨</div>Custom Color</button>
+      <button class="th-opt" id="imgColorBtn" onclick="matchImageColor()" style="grid-column:1/-1;"><div class="th-sw" style="background:linear-gradient(135deg,#333,#0aa)">🖼</div>Match Product Image Color</button>
+    </div>
+    <div id="customPanel" style="display:none;margin-top:8px;padding:11px;background:var(--ink3);border:1px solid var(--wire);border-radius:var(--r);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <input type="color" id="customColor" value="#ec4899" oninput="onCustomColor()" style="width:42px;height:32px;border:none;border-radius:6px;background:none;cursor:pointer;padding:0;"/>
+        <div style="font-size:11px;color:var(--fog);">Pick your product color</div>
+      </div>
+      <div style="display:flex;gap:5px;">
+        <button class="cmode-btn on" id="cmodeDark" onclick="setCustomMode('dark')" style="flex:1;padding:7px;border-radius:7px;border:1px solid var(--wire);background:var(--ink4);color:var(--snow);font-size:11px;cursor:pointer;">🌙 Dark</button>
+        <button class="cmode-btn" id="cmodeLight" onclick="setCustomMode('light')" style="flex:1;padding:7px;border-radius:7px;border:1px solid var(--wire);background:transparent;color:var(--fog);font-size:11px;cursor:pointer;">☀ Light</button>
+      </div>
+    </div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-lbl">Keyword Sources</div>
+    <div class="kw-list">
+      <div class="kw-row" id="ks-ebay"><div class="kw-nm"><div class="kw-d"></div>eBay</div><div class="kw-ct" id="kc-ebay">—</div></div>
+      <div class="kw-row" id="ks-amazon"><div class="kw-nm"><div class="kw-d"></div>Amazon</div><div class="kw-ct" id="kc-amazon">—</div></div>
+      <div class="kw-row" id="ks-walmart"><div class="kw-nm"><div class="kw-d"></div>Walmart</div><div class="kw-ct" id="kc-walmart">—</div></div>
+      <div class="kw-row" id="ks-google"><div class="kw-nm"><div class="kw-d"></div>Google</div><div class="kw-ct" id="kc-google">—</div></div>
+    </div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-lbl">Policies</div>
+    <textarea class="sb-ta" id="policyText" rows="5">Fast Shipping: 2-3 business days.
+Free Shipping: No hidden fees.
+30-Day Returns: Full refund guaranteed.</textarea>
+  </div>
+</aside>
+
+<main class="main" id="mainArea">
+  <div class="input-zone">
+    <div class="iz-head">
+      <div class="iz-title">Product Details</div>
+      <div class="iz-sub">Paste the full title, description and specs from Amazon / Walmart / any sourcing platform</div>
+    </div>
+    <textarea class="product-ta" id="productInput" placeholder="TITLE: [Product title]&#10;&#10;DESCRIPTION:&#10;[Paste description...]&#10;&#10;SPECS:&#10;- Brand:&#10;- Weight:"></textarea>
+    <div class="comp-title-wrap">
+      <div class="comp-title-lbl">🏆 Competitor's eBay Title <span style="color:var(--dim);font-weight:400;">(optional — paste a top seller's title to beat it)</span></div>
+      <input type="text" class="comp-title-inp" id="compTitle" placeholder="Paste competitor's eBay title here (optional)..." oninput="saveDraftDebounced()"/>
+    </div>
+    <div class="comp-title-wrap">
+      <div class="comp-title-lbl">🏷 Brand Name <span style="color:var(--dim);font-weight:400;">(optional — fill it and the brand WILL appear in HTML heading, description &amp; specs; leave empty for no brand anywhere. Never in eBay title.)</span></div>
+      <input type="text" class="comp-title-inp" id="brandName" placeholder="e.g. Mainstays (leave empty = no brand / Unbranded)" oninput="saveDraftDebounced()"/>
+      <label class="brand-title-opt"><input type="checkbox" id="brandInTitle" onchange="saveDraftDebounced()"/> <span>Also put brand in the MAIN TITLE <span style="color:var(--dim);font-weight:400;">(sirf jab brand naam se search hota ho — e.g. Meguiars, Stanley)</span></span></label>
+    </div>
+    <div class="comp-title-wrap">
+      <div class="comp-title-lbl">🖼 Product Image URLs <span style="color:var(--dim);font-weight:400;">(optional — one per line, max 4; first = main hero image)</span></div>
+      <textarea class="img-urls-inp" id="imgUrls" placeholder="Paste image links in ANY format (direct / HTML / BBCode)... ya neeche Upload button use karein" oninput="onImagesInput()"></textarea>
+      <div class="img-up-row">
+        <input type="file" id="imgFiles" accept="image/png,image/jpeg,image/webp" multiple style="display:none" onchange="uploadImagesToHost(this.files)"/>
+        <button class="img-up-btn" onclick="document.getElementById('imgFiles').click()">📤 Upload Images (PNG/JPG)</button>
+        <input type="text" class="imgbb-key-inp" id="imgbbKey" placeholder="imgbb API key — free, one time (api.imgbb.com)" oninput="saveImgbbKey()"/>
+      </div>
+      <div class="img-urls-note" id="imgUrlsNote"></div>
+    </div>
+    <div class="kw-found" id="kwFound"></div>
+    <div class="act-row">
+      <button class="gen-btn" id="genBtn" onclick="generate()">
+        <div class="spinner" id="spinner"></div>
+        <span id="btnTxt">Generate Listing</span>
+      </button>
+      <button class="clr-btn" onclick="clearAll()">Clear</button>
+      <div class="char-ct" id="charCt">0 chars</div>
+    </div>
+    <div class="err-bar" id="errBar"></div>
+    <div class="prog" id="prog">
+      <div class="prog-steps">
+        <div class="ps" id="ps1"><div class="ps-ic">1</div>Keywords</div>
+        <div class="ps" id="ps2"><div class="ps-ic">2</div>SEO Listing</div>
+        <div class="ps" id="ps3"><div class="ps-ic">3</div>Output</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="emptyState" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:300px;">
+    <div class="empty">
+      <div class="empty-ic">✦</div>
+      <div class="empty-t">Ready to forge your listing</div>
+      <div class="empty-s">Generate listing first, then run Off-Page SEO for a complete strategy</div>
+    </div>
+  </div>
+
+  <div class="output" id="output">
+    <div class="out-split" id="outSplit">
+      <div class="l-pane" id="lPane">
+        <div class="pane-hdr">
+          <div class="pane-ttl" id="lPaneTitle">📋 SEO Listing</div>
+          <div class="pane-acts">
+            <button class="ib teal" onclick="copyAllTxt()">Copy All</button>
+          </div>
+        </div>
+        <div class="stabs" id="stabs"></div>
+        <div class="sec-cnt" id="secCnt"></div>
+      </div>
+      <div class="h-pane" id="hPane">
+        <div class="pane-hdr">
+          <div class="pane-ttl" id="hPaneTitle">🌐 HTML Listing — eBay Paste Ready</div>
+          <div class="pane-acts" id="hPaneActs">
+            <button class="ib gold" id="cpHtmlBtn" onclick="copyHtml()">Copy HTML</button>
+            <button class="ib" onclick="dlHtml()">⬇ Download</button>
+          </div>
+        </div>
+        <div class="vtabs" id="vtabsRow">
+          <button class="vtab on" id="vtP" onclick="showPreview()">Live Preview</button>
+          <button class="vtab" id="vtS" onclick="showSrc()">HTML Source</button>
+        </div>
+        <div class="h-frame-w" id="frameW"><iframe class="h-frame" id="htmlFrame"></iframe></div>
+        <div class="h-src-w" id="srcW"><div class="h-src" id="htmlSrc"></div></div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// BUILT-IN GEMINI KEY (optional): neeche 'PASTE-YOUR-GEMINI-KEY-HERE'
+// ki jagah apni FREE Gemini key paste kar dein (AIza... wali) —
+// phir kisi ko kabhi key nahi daalni paregi, field khud chhup jayega.
+// ═══════════════════════════════════════════════════════════════
+var DEFAULT_GEMINI_KEY = 'PASTE-YOUR-GEMINI-KEY-HERE';
+
+var platform='ebay', theme='auto', fullTxt='', genHtml='', allKws=[], shopifyTxt='', tiktokTxt='', seoTxt='', market='us';
+var srcKws={ebay:[],amazon:[],walmart:[],google:[]};
+var srcReal={ebay:false,amazon:false,walmart:false,google:false};
+var lastProduct='', lastStore='';
+
+window.onload=function(){
+  var savedDesign=localStorage.getItem('slf_design')||'glass'; setDesign(savedDesign);
+  var savedMarket=localStorage.getItem('slf_market')||'us'; setMarket(savedMarket);
+  // Built-in key: file mein baked key ho to use karo aur key field chhupa do
+  var _dk=(typeof DEFAULT_GEMINI_KEY!=='undefined'?String(DEFAULT_GEMINI_KEY):'').trim();
+  if(_dk.indexOf('AIza')===0){
+    var _ki=document.getElementById('apiKey');
+    if(_ki){_ki.value=_dk;}
+    localStorage.setItem('slf_gk',_dk);
+    var _led=document.getElementById('keyLed'); if(_led)_led.classList.add('on');
+    var _kw=document.querySelector('.key-wrap'); if(_kw)_kw.style.display='none';
+  }
+  var savedImgbb=localStorage.getItem('slf_imgbb'); if(savedImgbb){var ik=document.getElementById('imgbbKey'); if(ik) ik.value=savedImgbb;}
+  var k=localStorage.getItem('slf_gk'); if(k){document.getElementById('apiKey').value=k;onKey();}
+  var th=localStorage.getItem('slf_th')||'auto'; theme=th;
+  (function(){
+    var btns=document.querySelectorAll('#thGrid .th-opt'); var matched=false;
+    btns.forEach(function(b){b.classList.remove('on');});
+    btns.forEach(function(b){
+      var oc=b.getAttribute('onclick')||'';
+      if(oc.indexOf("'"+th+"'")>-1 && !matched){ b.classList.add('on'); matched=true; }
+    });
+    if(!matched && btns[0]){ btns[0].classList.add('on'); theme='auto'; }
+    if(theme==='custom')document.getElementById('customPanel').style.display='block';
+  })();
+  var cc=localStorage.getItem('slf_cc'); if(cc){customColor=cc;document.getElementById('customColor').value=cc;document.getElementById('customSwatch').style.background='linear-gradient(135deg,'+cc+','+cc+')';}
+  var cm=localStorage.getItem('slf_cm'); if(cm){setCustomMode(cm);}
+  var po=localStorage.getItem('slf_po'); if(po) document.getElementById('policyText').value=po;
+  document.getElementById('productInput').addEventListener('input',function(){updateCharCount();saveDraftDebounced();});
+  restoreSession();
+  updateRestoreBtn();
+};
+
+function onKey(){var k=document.getElementById('apiKey').value.trim();localStorage.setItem('slf_gk',k);document.getElementById('keyLed').classList.toggle('on',k.indexOf('AIza')===0);}
+
+// Three complete design styles — each swaps colors AND design tokens (shadows, glow, blur, gradients)
+var DESIGN_STYLES={
+  // GLASS — dark, glassmorphism, soft glow (Linear / Arc vibe)
+  glass:{
+    ink:'#07070a',ink2:'#0d0d11',ink3:'#15151b',ink4:'#1e1e26',
+    wire:'#2a2a33',wire2:'#3a3a46',dim:'#5a5a6e',fog:'#9090a6',
+    mist:'#b8b8c8',snow:'#eeeef6',white:'#f8f8fc',
+    'card-shadow':'0 4px 24px rgba(0,0,0,0.4)',
+    'panel-blur':'blur(12px)',
+    'topbar-bg':'rgba(10,10,14,0.7)',
+    'card-gradient':'linear-gradient(160deg,rgba(255,255,255,0.025),rgba(255,255,255,0))',
+    'border-glow':'0 0 0 1px rgba(212,168,71,0.1)'
+  },
+  // CLEAN — light, airy, soft shadows (Notion / Stripe vibe)
+  clean:{
+    ink:'#eef0f5',ink2:'#ffffff',ink3:'#f6f7fa',ink4:'#eceef3',
+    wire:'#e2e5ec',wire2:'#cdd2dd',dim:'#9aa0ad',fog:'#6b7280',
+    mist:'#4b5563',snow:'#1f2533',white:'#0f1420',
+    'card-shadow':'0 1px 3px rgba(16,24,40,0.06),0 4px 16px rgba(16,24,40,0.04)',
+    'panel-blur':'blur(0px)',
+    'topbar-bg':'rgba(255,255,255,0.85)',
+    'card-gradient':'none',
+    'border-glow':'none'
+  },
+  // RICH — deep, bold gradients, strong depth (premium SaaS vibe)
+  rich:{
+    ink:'#0a0812',ink2:'#120e1f',ink3:'#1a1428',ink4:'#241b35',
+    wire:'#332842',wire2:'#443555',dim:'#6b5a82',fog:'#9a86b5',
+    mist:'#c2b3d6',snow:'#efe9f7',white:'#faf6ff',
+    'card-shadow':'0 8px 32px rgba(80,40,140,0.18)',
+    'panel-blur':'blur(8px)',
+    'topbar-bg':'rgba(18,14,31,0.8)',
+    'card-gradient':'linear-gradient(160deg,rgba(167,139,250,0.06),rgba(212,168,71,0.02))',
+    'border-glow':'0 0 0 1px rgba(167,139,250,0.12)'
+  }
+};
+
+function setMarket(m){
+  market=m;
+  localStorage.setItem('slf_market', m);
+  document.querySelectorAll('.market-btn').forEach(function(b){b.classList.toggle('market-on', b.getAttribute('data-market')===m);});
+}
+
+function setDesign(name){
+  var t=DESIGN_STYLES[name]||DESIGN_STYLES.glass;
+  var root=document.documentElement;
+  Object.keys(t).forEach(function(k){ root.style.setProperty('--'+k, t[k]); });
+  localStorage.setItem('slf_design', name);
+  document.querySelectorAll('.ds-btn').forEach(function(b){b.classList.toggle('ds-on', b.getAttribute('data-ds')===name);});
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+function closeSidebarMobile(){
+  if(window.innerWidth<=860){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+}
+
+function setPlatform(p,btn){platform=p;document.querySelectorAll('#platOpts .p-opt').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');document.getElementById('themeSection').classList.toggle('hidden',p!=='ebay');}
+
+// Confirmation modal logic for Shopify & Off-Page SEO (extra safety layer to avoid accidental credit use)
+var pendingAction=null, pendingBtn=null;
+
+function confirmPlatform(p,btn){
+  pendingAction='shopify'; pendingBtn=btn;
+  document.getElementById('confirmIcon').textContent='🛍';
+  document.getElementById('confirmTitle').textContent='Switch to Shopify Only?';
+  document.getElementById('confirmMsg').textContent='This will switch the tool to Shopify mode. When you generate, it will use your API credits for a Shopify listing. Continue?';
+  document.getElementById('confirmYesBtn').textContent='Yes, Switch';
+  openConfirm();
+}
+function confirmOffPage(btn){
+  // require a generated listing first
+  pendingAction='offpage'; pendingBtn=btn;
+  document.getElementById('confirmIcon').textContent='🚀';
+  document.getElementById('confirmTitle').textContent='Run Off-Page SEO?';
+  document.getElementById('confirmMsg').textContent='This will use your API credits to generate an off-page SEO strategy. Make sure you have generated a listing first. Continue?';
+  document.getElementById('confirmYesBtn').textContent='Yes, Run It';
+  openConfirm();
+}
+function openConfirm(){document.getElementById('confirmOverlay').classList.add('show');}
+function closeConfirm(){document.getElementById('confirmOverlay').classList.remove('show');pendingAction=null;pendingBtn=null;}
+function confirmProceed(){
+  var action=pendingAction, btn=pendingBtn;
+  document.getElementById('confirmOverlay').classList.remove('show');
+  pendingAction=null; pendingBtn=null;
+  if(action==='shopify'){
+    setPlatform('shopify',btn);
+  } else if(action==='offpage'){
+    // mark the sidebar button active visually, then run
+    document.querySelectorAll('#platOpts .p-opt').forEach(function(b){b.classList.remove('on');});
+    if(btn) btn.classList.add('on');
+    generateOffPageSEO();
+  } else if(action==='newsession'){
+    clearSession();
+    clearAll();
+  }
+}
+var customColor='#ec4899', customMode='dark';
+
+function setTheme(t,btn){
+  theme=t; localStorage.setItem('slf_th',t);
+  document.querySelectorAll('#thGrid .th-opt').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  document.getElementById('customPanel').style.display = (t==='custom') ? 'block' : 'none';
+  // Free live rebuild: if a listing already exists, re-render the HTML in the new theme (no API call)
+  if(platform==='ebay' && fullTxt){
+    try{
+      genHtml=buildHtmlFromListing(fullTxt,'',resolveTheme(theme));
+      renderHtml(genHtml);
+      saveSession();
+    }catch(e){ console.error('Theme rebuild failed:', e.message); }
+  }
+}
+function onCustomColor(){
+  customColor=document.getElementById('customColor').value;
+  document.getElementById('customSwatch').style.background='linear-gradient(135deg,'+customColor+','+customColor+')';
+  localStorage.setItem('slf_cc',customColor);
+  if(platform==='ebay' && fullTxt && theme==='custom'){
+    try{ genHtml=buildHtmlFromListing(fullTxt,'',resolveTheme(theme)); renderHtml(genHtml); saveSession(); }catch(e){}
+  }
+}
+function setCustomMode(m){
+  customMode=m; localStorage.setItem('slf_cm',m);
+  document.getElementById('cmodeDark').classList.toggle('on',m==='dark');
+  document.getElementById('cmodeLight').classList.toggle('on',m==='light');
+  document.getElementById('cmodeDark').style.background = m==='dark'?'var(--ink4)':'transparent';
+  document.getElementById('cmodeDark').style.color = m==='dark'?'var(--snow)':'var(--fog)';
+  document.getElementById('cmodeLight').style.background = m==='light'?'var(--ink4)':'transparent';
+  document.getElementById('cmodeLight').style.color = m==='light'?'var(--snow)':'var(--fog)';
+  if(platform==='ebay' && fullTxt && theme==='custom'){
+    try{ genHtml=buildHtmlFromListing(fullTxt,'',resolveTheme(theme)); renderHtml(genHtml); saveSession(); }catch(e){}
+  }
+}
+function setChip(s,t){var c=document.getElementById('chip');c.className='s-chip s-'+s;c.textContent=t;}
+function setStep(n){for(var i=1;i<=3;i++){var el=document.getElementById('ps'+i);el.classList.remove('done','act');var ic=el.querySelector('.ps-ic');if(i<n){el.classList.add('done');ic.textContent='✓';}else if(i===n){el.classList.add('act');ic.textContent=i;}else{ic.textContent=i;}}}
+function kwSt(id,st,ct){var r=document.getElementById('ks-'+id),c=document.getElementById('kc-'+id),d=r.querySelector('.kw-d');r.classList.remove('kw-ok','kw-go','kw-no');d.classList.remove('sp');if(st==='go'){r.classList.add('kw-go');d.classList.add('sp');}else if(st==='ok')r.classList.add('kw-ok');else if(st==='no')r.classList.add('kw-no');if(ct!==undefined)c.textContent=ct>0?ct+'kws':'0';}
+
+// Backend URL — your deployed Vercel server for REAL keywords
+// ══ CATEGORY → THEME AUTO-DETECTION ═══════════════════════════
+// Reads the product text and picks the best-matching premium theme.
+var CATEGORY_THEMES = [
+  {theme:'ocean',    cats:'Electronics & Tech', words:['phone','iphone','samsung','tablet','laptop','computer','charger','cable','usb','bluetooth','headphone','earbud','speaker','camera','drone','gaming','console','mouse','keyboard','monitor','tv','television','smartwatch','power bank','adapter','router','wifi','led','electronic','gadget','tech','digital','wireless','battery','gps','dash cam','projector']},
+  {theme:'emerald',  cats:'Health, Garden & Organic', words:['vitamin','supplement','organic','natural','herbal','garden','plant','seed','fertilizer','grow','outdoor','camping','hiking','yoga','fitness','protein','wellness','essential oil','tea','honey','eco','bamboo','sustainable','pet','dog','cat','bird','aquarium']},
+  {theme:'rose',     cats:'Beauty, Fashion & Home Decor', words:['makeup','cosmetic','lipstick','beauty','skincare','perfume','fragrance','nail','hair','wig','lash','dress','clothing','shirt','jacket','shoes','handbag','purse','jewelry','jewellery','necklace','earring','bracelet','ring','fashion','decor','candle','vase','cushion','curtain','bedding','blanket','gift','wedding','baby']},
+  {theme:'noir',     cats:'Watches & Premium Luxury', words:['watch','luxury','premium leather','wallet','sunglasses','cufflink','tie','suit','belt leather','cigar','minimalist','executive']},
+  {theme:'heritage', cats:'Auto, Tools & Industrial', words:['car','auto','vehicle','motorcycle','engine','oil','brake','tire','tyre','wheel','wrench','tool','drill','saw','hammer','screwdriver','bolt','gasket','seal','bearing','pump','filter','industrial','workshop','garage','repair','tractor','trailer','hitch','towing','welding']},
+  {theme:'clean',    cats:'Home & Kitchen', words:['kitchen','cook','pan','pot','knife','utensil','cup','mug','plate','bowl','storage','organizer','cleaning','vacuum','mop','laundry','bathroom','towel','soap','dispenser','shelf','furniture','desk','chair','lamp','appliance','blender','mixer','coffee']},
+];
+function detectCategoryTheme(productText){
+  var t=(productText||'').toLowerCase();
+  var best={theme:'modern', cats:'General', score:0};
+  CATEGORY_THEMES.forEach(function(c){
+    var score=0;
+    c.words.forEach(function(w){ if(t.indexOf(w)>-1) score++; });
+    if(score>best.score) best={theme:c.theme, cats:c.cats, score:score};
+  });
+  return best;
+}
+// Resolve 'auto' into a real theme name based on the current product text
+function resolveTheme(t){
+  if(t!=='auto') return t;
+  var d=detectCategoryTheme(document.getElementById('productInput').value);
+  return d.theme;
+}
+
+// ══ IN-TOOL IMAGE UPLOAD (via user's free imgbb API key) ══════
+function saveImgbbKey(){
+  var k=(document.getElementById('imgbbKey').value||'').trim();
+  localStorage.setItem('slf_imgbb', k);
+}
+function uploadImagesToHost(files){
+  var note=document.getElementById('imgUrlsNote');
+  var key=(document.getElementById('imgbbKey').value||'').trim() || localStorage.getItem('slf_imgbb') || '';
+  if(!key){
+    if(note){note.innerHTML='⚠ Pehle imgbb API key lagayein (bilkul free): <b>api.imgbb.com</b> kholें → free account banayein → "Add API key" → key copy karke yahan paste karein. Ek hi baar karna hai — save ho jayegi.'; note.style.color='#fbbf24';}
+    return;
+  }
+  var existing=getProductImages();
+  var room=4-existing.length;
+  if(room<=0){ if(note){note.textContent='⚠ 4 images ki limit already poori hai — pehle koi link hatayein'; note.style.color='#fbbf24';} return; }
+  var list=Array.prototype.slice.call(files).slice(0,room);
+  if(list.length===0) return;
+  var done=0, failed=0;
+  if(note){note.textContent='⏳ Uploading '+list.length+' image'+(list.length>1?'s':'')+'... (0/'+list.length+')'; note.style.color='var(--fog)';}
+  list.forEach(function(file){
+    if(file.size>16*1024*1024){ failed++; done++; return; }
+    var rd=new FileReader();
+    rd.onload=function(){
+      var b64=String(rd.result).split(',')[1];
+      var fd=new FormData();
+      fd.append('key', key);
+      fd.append('image', b64);
+      fetch('https://api.imgbb.com/1/upload', {method:'POST', body:fd})
+        .then(function(r){return r.json();})
+        .then(function(j){
+          done++;
+          if(j && j.success && j.data && (j.data.url||j.data.display_url)){
+            var url=j.data.url||j.data.display_url;
+            var ta=document.getElementById('imgUrls');
+            ta.value=(ta.value.trim()? ta.value.trim()+'\n':'')+url;
+            onImagesInput();
+          } else { failed++; }
+          if(note){
+            if(done<list.length){ note.textContent='⏳ Uploading... ('+done+'/'+list.length+')'; }
+            else if(failed===0){ note.textContent='✓ '+list.length+' image'+(list.length>1?'s':'')+' uploaded & added — HTML mein live'; note.style.color='var(--teal)'; }
+            else { note.textContent='⚠ '+(list.length-failed)+' uploaded, '+failed+' failed — key sahi hai? (api.imgbb.com se dobara check karein)'; note.style.color='#fbbf24'; }
+          }
+        })
+        .catch(function(){
+          done++; failed++;
+          if(note && done>=list.length){ note.textContent='⚠ Upload failed — internet ya API key check karein'; note.style.color='#fbbf24'; }
+        });
+    };
+    rd.readAsDataURL(file);
+  });
+}
+
+// ══ IMAGE → THEME COLOR MATCHING ══════════════════════════════
+// Reads the first product image's pixels and builds the whole HTML theme
+// from its dominant vibrant color (uses the existing Custom Color engine).
+function matchImageColor(){
+  var note=document.getElementById('imgUrlsNote');
+  var imgs=getProductImages();
+  if(imgs.length===0){
+    if(note){note.textContent='⚠ Pehle Product Image URL daalein — phir yeh button us image ka color utha kar poori theme bana dega'; note.style.color='#fbbf24';}
+    return;
+  }
+  if(note){note.textContent='⏳ Reading image colors...'; note.style.color='var(--fog)';}
+  var img=new Image();
+  img.crossOrigin='anonymous';
+  img.onload=function(){
+    try{
+      var cv=document.createElement('canvas'); var S=64;
+      cv.width=S; cv.height=S;
+      var cx=cv.getContext('2d');
+      cx.drawImage(img,0,0,S,S);
+      var d=cx.getImageData(0,0,S,S).data;
+      // Bucket vibrant pixels by hue; skip near-white/near-black/gray
+      var buckets={};
+      for(var i=0;i<d.length;i+=4){
+        var r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];
+        if(a<200) continue;
+        var mx=Math.max(r,g,b), mn=Math.min(r,g,b);
+        var sat=mx-mn, lum=(mx+mn)/2;
+        if(sat<30 || lum<35 || lum>225) continue; // skip gray/near-white/near-black
+        var key=(Math.round(r/32)*32)+','+(Math.round(g/32)*32)+','+(Math.round(b/32)*32);
+        if(!buckets[key]) buckets[key]={n:0,r:0,g:0,b:0};
+        buckets[key].n++; buckets[key].r+=r; buckets[key].g+=g; buckets[key].b+=b;
+      }
+      var best=null;
+      Object.keys(buckets).forEach(function(k){
+        var bk=buckets[k];
+        var avgR=bk.r/bk.n, avgG=bk.g/bk.n, avgB=bk.b/bk.n;
+        var vib=(Math.max(avgR,avgG,avgB)-Math.min(avgR,avgG,avgB));
+        var score=bk.n*(1+vib/128); // frequency weighted by vibrancy
+        if(!best || score>best.score) best={score:score, r:avgR, g:avgG, b:avgB};
+      });
+      if(!best){
+        if(note){note.textContent='⚠ Image mein koi clear color nahi mila (mostly white/gray) — Custom Color se manually choose karein'; note.style.color='#fbbf24';}
+        return;
+      }
+      function h2(v){v=Math.round(v).toString(16);return v.length<2?'0'+v:v;}
+      var hex='#'+h2(best.r)+h2(best.g)+h2(best.b);
+      // Apply through the existing custom theme engine
+      customColor=hex;
+      localStorage.setItem('slf_cc',hex);
+      var ci=document.getElementById('customColor'); if(ci) ci.value=hex;
+      var sw=document.getElementById('customSwatch'); if(sw) sw.style.background='linear-gradient(135deg,'+hex+','+hex+')';
+      setTheme('custom', document.getElementById('customThemeBtn'));
+      if(note){note.textContent='✓ Theme matched to product image color ('+hex+') — HTML rebuilt free'; note.style.color='var(--teal)';}
+    }catch(e){
+      if(note){note.textContent='⚠ Is image host ne color-reading ki ijazat nahi di (CORS) — postimages.org ya imgbb ki image try karein, ya Custom Color manually use karein'; note.style.color='#fbbf24';}
+    }
+  };
+  img.onerror=function(){
+    if(note){note.textContent='⚠ Image load nahi hui — URL check karein'; note.style.color='#fbbf24';}
+  };
+  img.src=imgs[0];
+}
+
+// ══ PRODUCT IMAGES ════════════════════════════════════════════
+// eBay descriptions can only show images by URL (https). Parse up to 4 valid URLs.
+function getProductImages(){
+  var raw=(document.getElementById('imgUrls')||{value:''}).value||'';
+  // Universal extractor: finds image URLs inside ANY pasted format —
+  // plain links, HTML (<img src=...>), BBCode ([img]...[/img]), or mixed text.
+  var found = raw.match(/https:\/\/[^\s"'<>\[\]]+\.(?:jpg|jpeg|png|webp|gif)(?:\?[^\s"'<>\[\]]*)?/gi) || [];
+  // Also catch known image-host URLs without a clear extension
+  var hostOnly = raw.match(/https:\/\/i\.(?:ebayimg|postimg|imgur|ibb)\.[^\s"'<>\[\]]+/gi) || [];
+  var all = found.concat(hostOnly);
+  var seen={}, out=[];
+  all.forEach(function(u){ u=u.trim(); if(u && !seen[u]){seen[u]=1; out.push(u);} });
+  return out.slice(0,4);
+}
+var _imgTimer=null;
+function onImagesInput(){
+  saveDraftDebounced();
+  var note=document.getElementById('imgUrlsNote');
+  var raw=(document.getElementById('imgUrls').value||'').trim();
+  var valid=getProductImages();
+  if(note){
+    if(!raw){ note.textContent=''; }
+    else if(valid.length===0){ note.textContent='⚠ No valid image links found — links must start with https:// and end in .jpg / .png / .webp'; note.style.color='#fbbf24'; }
+    else { note.textContent='✓ '+valid.length+' image'+(valid.length>1?'s':'')+' will be placed in the HTML listing'; note.style.color='var(--teal)'; }
+  }
+  // Free live rebuild of HTML with the images
+  clearTimeout(_imgTimer);
+  _imgTimer=setTimeout(function(){
+    if(platform==='ebay' && fullTxt){
+      try{ genHtml=buildHtmlFromListing(fullTxt,'',resolveTheme(theme)); renderHtml(genHtml); saveSession(); }catch(e){}
+    }
+  }, 600);
+}
+
+// ══ TIKTOK SHOP US CATEGORIES (L1 + common L2 examples) ═══════
+var TIKTOK_CATS = [
+'Beauty & Personal Care (Makeup, Skincare, Hair Care, Fragrance, Nail Care, Bath & Body, Mens Grooming, Beauty Tools)',
+'Womenswear & Underwear (Tops, Dresses, Bottoms, Outerwear, Underwear, Sleepwear, Swimwear, Plus Size)',
+'Menswear & Underwear (Tops, Bottoms, Outerwear, Underwear, Sleepwear, Big & Tall)',
+'Fashion Accessories (Hats & Caps, Scarves, Belts, Gloves, Hair Accessories, Sunglasses, Watches Fashion)',
+'Shoes (Womens Shoes, Mens Shoes, Sneakers, Boots, Sandals, Slippers)',
+'Luggage & Bags (Handbags, Backpacks, Wallets, Travel Luggage, Crossbody Bags, Tote Bags)',
+'Jewelry Accessories & Derivatives (Necklaces, Earrings, Bracelets, Rings, Body Jewelry, DIY Jewelry)',
+'Home Supplies (Home Organizers, Storage, Bathroom Supplies, Laundry Tools, Cleaning Supplies, Door & Window Hardware)',
+'Kitchenware (Cookware, Bakeware, Kitchen Utensils, Gadgets, Drinkware, Food Storage, Tableware, Bar Tools)',
+'Textiles & Soft Furnishings (Bedding, Pillows, Blankets, Curtains, Rugs, Cushion Covers, Towels)',
+'Household Appliances (Small Kitchen Appliances, Vacuums, Fans, Heaters, Air Purifiers, Irons, Humidifiers)',
+'Phones & Electronics (Phone Cases, Chargers, Cables, Earphones & Headphones, Speakers, Smart Watches, Camera Accessories)',
+'Computers & Office Equipment (Keyboards, Mouse, Laptop Accessories, Desk Accessories, Office Supplies, Printers)',
+'Pet Supplies (Dog Supplies, Cat Supplies, Pet Toys, Pet Grooming, Pet Beds, Aquarium, Bird Supplies)',
+'Baby & Maternity (Baby Clothing, Diapering, Feeding, Baby Toys, Strollers Accessories, Maternity Wear)',
+'Toys & Hobbies (Building Toys, Dolls, Educational Toys, Outdoor Play, Party Supplies, Collectible Toys, Arts & Crafts)',
+'Sports & Outdoor (Fitness Equipment, Yoga, Cycling, Camping & Hiking, Fishing, Team Sports, Water Sports, Hunting Accessories)',
+'Automotive & Motorcycle (Car Accessories, Interior Accessories, Car Care & Detailing, Motorcycle Accessories, Car Electronics, Repair Tools)',
+'Tools & Hardware (Hand Tools, Power Tool Accessories, Measuring Tools, Fasteners, Garden Tools, Safety Equipment)',
+'Home Improvement (Lighting, Smart Home, Electrical, Plumbing, Paint Supplies, Wall Decor Hardware)',
+'Furniture (Living Room, Bedroom, Office Furniture, Outdoor Furniture, Kids Furniture)',
+'Food & Beverages (Snacks, Candy, Drinks, Pantry Staples, Coffee & Tea, Specialty Foods)',
+'Health (Vitamins & Supplements, OTC Wellness, First Aid, Sexual Wellness, Vision Care, Foot Care) — NOTE: many Health items need certification',
+'Books Magazines & Audio (Books, Journals, Stationery, Calendars)',
+'Collectibles (Trading Cards, Coins, Stamps, Memorabilia)',
+'Outdoor & Garden (Planters, Garden Decor, Grills & Outdoor Cooking, Patio Accessories)'
+];
+
+var BACKEND_URL = 'https://keyword-backend-zeta.vercel.app/api/keywords';
+
+// ══ VeRO PROTECTION ═══════════════════════════════════════════
+// eBay does NOT publish an official VeRO word list — it's a directory of
+// thousands of rights owners. This is a curated list of the brands most
+// known for aggressive VeRO enforcement, grouped by risk level.
+var VERO_HIGH = [
+  // Luxury / fashion — enforce constantly
+  'louis vuitton','gucci','chanel','hermes','prada','rolex','cartier','tiffany','burberry','versace',
+  'fendi','dior','balenciaga','givenchy','valentino','armani','dolce gabbana','yves saint laurent','ysl',
+  'bvlgari','omega','tag heuer','breitling','patek philippe','audemars piguet','hublot','montblanc',
+  'coach','michael kors','kate spade','tory burch','longchamp','celine','loewe','bottega veneta',
+  // Sports / footwear
+  'nike','adidas','jordan','air jordan','yeezy','puma','under armour','reebok','new balance','asics',
+  'converse','vans','supreme','lululemon','the north face','patagonia','columbia sportswear',
+  'timberland','dr martens','doc martens','birkenstock','ugg','crocs','skechers','hoka','salomon','merrell',
+  // Tech
+  'apple','iphone','ipad','macbook','airpods','airtag','imac','apple watch','samsung','galaxy',
+  'sony','playstation','ps5','ps4','bose','beats by dre','dyson','nintendo','switch','xbox','microsoft',
+  'gopro','canon','nikon','fitbit','garmin','logitech','anker','jbl','sennheiser','razer','dji',
+  // Entertainment / characters
+  'disney','pixar','marvel','dc comics','star wars','harry potter','pokemon','hello kitty','sanrio',
+  'nickelodeon','warner bros','universal studios','dreamworks','lego','funko','hasbro','mattel','barbie',
+  'nfl','nba','mlb','nhl','fifa','uefa','premier league','olympics','wwe','ferrari','lamborghini',
+  // Auto / moto
+  'harley davidson','harley-davidson','porsche','bmw','mercedes','mercedes-benz','audi','tesla','jeep',
+  // Big consumer brands
+  'yeti','hydro flask','stanley','dewalt','milwaukee','makita','bosch','black decker','weber',
+  'kitchenaid','instant pot','ninja','keurig','nespresso','tupperware','pyrex','oakley','ray-ban','rayban',
+  'victoria secret','calvin klein','tommy hilfiger','ralph lauren','polo ralph lauren','levis','levi strauss',
+  'carhartt','nivea','loreal','olay','neutrogena','gillette','oral-b','philips','braun'
+];
+var VERO_MED = [
+  'toyota','honda','ford','chevrolet','nissan','mazda','subaru','volkswagen','hyundai','kia',
+  'meguiars','armor all','turtle wax','3m','wd-40','loctite','gorilla glue','duracell','energizer',
+  'hp','dell','lenovo','asus','acer','intel','amd','nvidia','seagate','sandisk','kingston','western digital',
+  'lg','panasonic','sharp','toshiba','xiaomi','huawei','oneplus','motorola','nokia','google','pixel',
+  'nespresso','delonghi','breville','cuisinart','oster','hamilton beach','crock pot','rubbermaid',
+  'amazon','amazonbasics','walmart','costco','target','starbucks','coca cola','pepsi','nestle','kellogg'
+];
+// Phrases that commonly trigger IP / policy problems
+var VERO_PHRASES = [
+  {t:'replica', r:'high', why:'Counterfeit signal — instant removal risk'},
+  {t:'knock off', r:'high', why:'Counterfeit signal'},
+  {t:'knockoff', r:'high', why:'Counterfeit signal'},
+  {t:'clone', r:'high', why:'Counterfeit signal'},
+  {t:'fake', r:'high', why:'Counterfeit signal'},
+  {t:'copy of', r:'high', why:'Counterfeit signal'},
+  {t:'inspired by', r:'high', why:'Implies unauthorised brand association'},
+  {t:'style of', r:'high', why:'Implies unauthorised brand association'},
+  {t:'mirror image', r:'high', why:'Counterfeit signal'},
+  {t:'aaa quality', r:'high', why:'Common counterfeit marker'},
+  {t:'1:1', r:'high', why:'Common counterfeit marker'},
+  {t:'unbranded generic copy', r:'high', why:'Counterfeit signal'},
+  {t:'authentic', r:'med', why:'Only use if you can prove authenticity'},
+  {t:'genuine', r:'med', why:'Only use if you can prove authenticity'},
+  {t:'original', r:'med', why:'Only claim if truly original branded stock'},
+  {t:'oem', r:'med', why:'Only use if genuinely OEM — often challenged'},
+  {t:'compatible with', r:'med', why:'Allowed as fair use, but some brands still report it'},
+  {t:'fits ', r:'med', why:'Compatibility wording — some brands still report it'},
+  {t:'for use with', r:'med', why:'Compatibility wording — generally safer'},
+  {t:'made in usa', r:'med', why:'Only claim if verifiably true'}
+];
+
+// Scan any text for VeRO risks. Returns {high:[], med:[], phrases:[]}
+function scanVero(text){
+  var t = (text||'').toLowerCase();
+  var found = {high:[], med:[], phrases:[]};
+  function has(brand){
+    // word-boundary match so "apple" doesn't match "pineapple"
+    var esc = brand.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    return new RegExp('(^|[^a-z0-9])'+esc+'([^a-z0-9]|$)','i').test(t);
+  }
+  VERO_HIGH.forEach(function(b){ if(has(b) && found.high.indexOf(b)===-1) found.high.push(b); });
+  VERO_MED.forEach(function(b){ if(has(b) && found.med.indexOf(b)===-1) found.med.push(b); });
+  VERO_PHRASES.forEach(function(p){ if(t.indexOf(p.t)>-1) found.phrases.push(p); });
+  return found;
+}
+
+// Find which sections a risky term appears in
+function veroLocations(term, sections){
+  var where = [];
+  ['TITLE','HTML HEADING','DESCRIPTION','KEY FEATURES','ITEM SPECIFICS','TAGS'].forEach(function(k){
+    var body = (sections[k]||'').toLowerCase();
+    var esc = term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    if(new RegExp('(^|[^a-z0-9])'+esc+'([^a-z0-9]|$)','i').test(body)) where.push(k);
+  });
+  return where;
+}
+
+// ══ BRAND SEARCH DEMAND DETECTION ═════════════════════════════
+// Look at the REAL fetched keywords (Google/Amazon/eBay). If the product's
+// brand name actually shows up in what buyers search, the brand has search
+// demand and is worth keeping in the description + specs. If nobody searches
+// it, it's a no-name brand and we can leave it out / mark Unbranded.
+function detectBrandDemand(brandGuess, keywordList){
+  if(!brandGuess) return {searched:false, hits:0, note:'no brand detected'};
+  var b = brandGuess.toLowerCase().trim();
+  if(b.length < 2 || b==='unbranded' || b==='generic' || b==='n/a' || b==='none') {
+    return {searched:false, hits:0, note:'unbranded/generic'};
+  }
+  var esc = b.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  var re = new RegExp('(^|[^a-z0-9])'+esc+'([^a-z0-9]|$)','i');
+  var hits = 0;
+  (keywordList||[]).forEach(function(kw){ if(re.test(String(kw).toLowerCase())) hits++; });
+  // 1+ real search phrases containing the brand => it has demand
+  return {searched: hits>0, hits: hits, note: hits>0 ? (hits+' search phrases include the brand') : 'no buyer searches include the brand'};
+}
+
+// Extract a likely brand name from the raw product text the user pasted
+function extractBrandGuess(productText){
+  var lines = (productText||'').split('\n');
+  for(var i=0;i<lines.length;i++){
+    var m = lines[i].match(/^\s*brand\s*[:\-]?\s*(.+)$/i);
+    if(m && m[1]){ return m[1].replace(/[|,].*$/,'').trim().slice(0,40); }
+  }
+  return '';
+}
+
+
+// ── Global title helpers (used by both HTML build and TITLE tab) ──
+function slfSmartTrim(str, maxLen){
+  str = (str||'').trim();
+  if(str.length <= maxLen) return str;
+  var cut = str.slice(0, maxLen);
+  var lastSpace = cut.lastIndexOf(' ');
+  if(lastSpace > maxLen * 0.6) cut = cut.slice(0, lastSpace);
+  return cut.trim();
+}
+// Words that must never be padded into a title (famous brands + this product's own brand)
+function slfIsBrandWord(w){
+  var wl = w.toLowerCase();
+  // Block this product's own brand (e.g. Mainstays) — detected live from the product input
+  try{
+    var cb=document.getElementById('brandInTitle');
+    if(!(cb && cb.checked)){
+      var pb = (document.getElementById('brandName').value||'').trim();
+      if(!pb) pb = extractBrandGuess(document.getElementById('productInput').value); // fallback safety
+      if(pb){
+        var parts = pb.toLowerCase().split(/\s+/);
+        for(var p=0; p<parts.length; p++){ if(parts[p].length>2 && parts[p]===wl) return true; }
+      }
+    }
+  }catch(e){}
+  if(typeof VERO_HIGH === 'undefined') return false;
+  var all = VERO_HIGH.concat(typeof VERO_MED !== 'undefined' ? VERO_MED : []);
+  for(var i=0; i<all.length; i++){
+    var parts2 = all[i].split(/\s+/);
+    for(var j=0; j<parts2.length; j++){
+      if(parts2[j].length > 2 && parts2[j] === wl) return true;
+    }
+  }
+  return false;
+}
+
+// Force-remove the product's own brand from a title, wherever it came from
+function slfStripBrand(title){
+  try{
+    var cb=document.getElementById('brandInTitle');
+    if(cb && cb.checked) return title; // user wants brand in the title — do not strip
+    var pb = (document.getElementById('brandName').value||'').trim();
+    if(!pb) pb = extractBrandGuess(document.getElementById('productInput').value); // fallback safety
+    if(!pb) return title;
+    pb.toLowerCase().split(/\s+/).forEach(function(bw){
+      if(bw.length<3) return;
+      var esc=bw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      title = title.replace(new RegExp('(^|\\s)'+esc+'(?=\\s|$)','gi'),' ');
+    });
+    return title.replace(/\s{2,}/g,' ').trim();
+  }catch(e){ return title; }
+}
+
+// Ensure title is 75-80 chars: if too short, pad with relevant keyword words (whole words only)
+function slfPadTitle(title){
+  title = (title||'').trim();
+  if(title.length >= 75) return slfSmartTrim(title, 80);
+  // eBay keywords first (what eBay buyers search), then the merged list
+  var padSources = [];
+  if(window.slfEbayKws && window.slfEbayKws.length) padSources = padSources.concat(window.slfEbayKws);
+  if(typeof allKws !== 'undefined' && allKws.length) padSources = padSources.concat(allKws);
+  if(padSources.length === 0) return title;
+  var titleLower = title.toLowerCase();
+  for(var k=0; k<padSources.length; k++){
+    var words = padSources[k].split(/\s+/);
+    for(var w=0; w<words.length; w++){
+      var word = words[w];
+      var wl = word.toLowerCase();
+      if(wl.length < 3) continue;
+      if(titleLower.indexOf(wl) > -1) continue;
+      if(slfIsBrandWord(word)) continue; // never pad a brand name into the title
+      var candidate = title + ' ' + word;
+      if(candidate.length <= 80){
+        title = candidate;
+        titleLower = title.toLowerCase();
+      }
+      if(title.length >= 75) return title;
+    }
+  }
+  return title;
+}
+var lastCompetitors = [];
+
+async function fetchAllKeywords(apiKey,productTitle){
+  var realData = {google:[], amazon:[], walmart:[], ebay:[]};
+  lastCompetitors = [];
+
+  // STEP 1: Get REAL keywords from backend (Google + Amazon + Walmart + eBay)
+  try{
+    var r = await fetch(BACKEND_URL + '?q=' + encodeURIComponent(productTitle) + '&market=' + market + (platform==='tiktok'?'&platform=tiktok':''), {signal:AbortSignal.timeout(15000)});
+    var d = await r.json();
+    realData.google = (d.google||[]).slice(0,10);
+    realData.amazon = (d.amazon||[]).slice(0,10);
+    realData.walmart = (d.walmart||[]).slice(0,10);
+    realData.ebay = (d.ebay||[]).slice(0,10);
+    lastCompetitors = d.competitors || [];
+    window.slfTikTokKws = (d.tiktok||[]).slice(0,10);
+    // Mark which sources gave REAL data
+    srcReal.google = realData.google.length>0;
+    srcReal.amazon = realData.amazon.length>0;
+    srcReal.walmart = realData.walmart.length>0;
+    srcReal.ebay = realData.ebay.length>0;
+  }catch(e){ console.error('Backend error:', e.message); }
+
+  // STEP 2: For any source that came back empty, use Claude as intelligent fallback
+  var needFallback = [];
+  if(realData.google.length===0) needFallback.push('google');
+  if(realData.amazon.length===0) needFallback.push('amazon');
+  if(realData.walmart.length===0) needFallback.push('walmart');
+  if(realData.ebay.length===0) needFallback.push('ebay');
+
+  if(needFallback.length>0 && apiKey && apiKey.indexOf('AIza')===0){
+    try{
+      var fbPrompt='You are an ecommerce keyword research expert.\nProduct: "'+productTitle+'"\n'
+        +'Generate 10 real buyer search keywords (2-6 words each) for EACH of these platforms: '+needFallback.join(', ')+'.\n'
+        +'Return ONLY valid JSON, no markdown, starting with {:\n{'
+        +needFallback.map(function(p){return '"'+p+'":["kw1","kw2","kw3","kw4","kw5","kw6","kw7","kw8","kw9","kw10"]';}).join(',')
+        +'}';
+      var resp=await claudeCall(apiKey,fbPrompt,700);
+      var txt=resp.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+      var idx=txt.indexOf('{'); if(idx>0) txt=txt.slice(idx);
+      var fb=JSON.parse(txt);
+      needFallback.forEach(function(p){
+        if(fb[p] && fb[p].length>0 && realData[p].length===0){
+          realData[p]=fb[p].slice(0,10);
+        }
+      });
+    }catch(e){ console.error('Fallback error:', e.message); }
+  }
+
+  return realData;
+}
+
+async function claudeCall(apiKey,prompt,maxTok){
+  // FREE edition: uses Google Gemini (free API key from aistudio.google.com)
+  var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+encodeURIComponent(apiKey);
+  var r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    contents:[{parts:[{text:prompt}]}],
+    generationConfig:{maxOutputTokens:maxTok, temperature:0.7}
+  })});
+  var d=await r.json();
+  if(d.error) throw new Error(d.error.message||'Gemini API error');
+  if(!d.candidates||!d.candidates[0]||!d.candidates[0].content||!d.candidates[0].content.parts) throw new Error('Empty response — thodi der baad dobara try karein (free tier limit)');
+  return d.candidates[0].content.parts.map(function(p){return p.text||'';}).join('');
+}
+
+// ─── OFF PAGE SEO GENERATOR ───────────────────────────────
+async function generateOffPageSEO(){
+  var apiKey=document.getElementById('apiKey').value.trim();
+  var product=document.getElementById('productInput').value.trim();
+  var store='';
+
+  if(!apiKey||apiKey.indexOf('AIza')!==0){showErr('⚠ API key daalo pehle.');return;}
+  if(!product||product.length<15){showErr('⚠ Pehle product details daalo.');return;}
+
+  closeSidebarMobile();
+  hideErr();
+  var sBtn=document.getElementById('seoSideBtn');
+  if(sBtn){sBtn.style.opacity='0.6';sBtn.querySelector('span:nth-child(2)').textContent='Researching...';}
+  setChip('work','Off-Page SEO research...');
+
+  var productTitle=product.split('\n')[0].replace(/title:/i,'').trim().slice(0,80);
+
+  var seoPrompt='You are a senior Off-Page SEO and social media marketing expert for ecommerce dropshipping (Shopify + eBay).\n\n'
+  +'PRODUCT: "'+productTitle+'"\n\n'
+  +'CRITICAL RULES:\n'
+  +'1. Return ONLY the exact section headers shown below, each on its own line in ALL CAPS\n'
+  +'2. NO markdown (no *, **, #, -, `)\n'
+  +'3. Number lists with "1." "2." format only\n'
+  +'4. Be SPECIFIC to this exact product — no generic filler\n'
+  +'5. Make every template COPY-PASTE READY (the user will paste it directly, so write the actual content, not instructions about it)\n\n'
+  +'Produce a practical, honest off-page SEO action plan using EXACTLY these sections:\n\n'
+  +'WHERE TO FOCUS\n'
+  +'[2-3 honest sentences: for THIS product, which off-page channels are actually worth the effort and which to skip. Be realistic about dropshipping — do not overpromise.]\n\n'
+  +'PINTEREST PINS (COPY READY)\n'
+  +'[Pinterest works well for ecommerce. Write 3 complete, ready-to-post pins. For each: "Pin Title:" (one line) then "Description:" (2-3 sentences with natural keywords) then "Hashtags:" (5 relevant hashtags). Make them about THIS product.]\n\n'
+  +'INSTAGRAM AND FACEBOOK POSTS (COPY READY)\n'
+  +'[Write 3 complete ready-to-post captions for this product. Each caption: a hook line, 2 benefit lines, a call to action, and 5 hashtags. Number them 1, 2, 3.]\n\n'
+  +'REDDIT AND QUORA (COPY READY)\n'
+  +'[List 5 specific subreddits or Quora topics where this product naturally fits. For each: "1. r/subreddit or Quora topic" then a one-line note on how to genuinely help (not spam). Then write 1 short sample helpful comment that mentions the product naturally without sounding like an ad.]\n\n'
+  +'BLOGGER OUTREACH EMAIL (COPY READY)\n'
+  +'[Write 1 complete, ready-to-send email to a blogger or micro-influencer in this product niche. Include subject line and body. Keep it short, genuine, and about THIS product. Use [Blogger Name] and [Your Name] as placeholders.]\n\n'
+  +'BACKLINK IDEAS\n'
+  +'[6 specific, realistic places to get backlinks or mentions for this product niche. Format: "1. [Place/site type]: [how to get a link there]". Focus on ones a small seller can actually achieve.]\n\n'
+  +'7-DAY ACTION CHECKLIST\n'
+  +'[A simple day-by-day checklist of small off-page tasks for one week. Format: "Day 1: [one specific task]". Keep each task small and doable in under 30 minutes.]\n\n'
+  +'PRODUCT: "'+productTitle+'"';
+
+  try{
+    var result=await claudeCall(apiKey,seoPrompt,2500);
+    seoTxt=result;
+    renderOffPageSEO(result, productTitle);
+    document.getElementById('emptyState').style.display='none';
+    document.getElementById('output').classList.add('show');
+    setChip('done','SEO Done!');
+    setTimeout(function(){document.getElementById('mainArea').scrollTo({top:document.getElementById('output').offsetTop-10,behavior:'smooth'});},80);
+  }catch(e){
+    showErr('SEO Error: '+e.message);
+    setChip('err','Error');
+  }
+
+  var sBtn2=document.getElementById('seoSideBtn');
+  if(sBtn2){sBtn2.style.opacity='1';sBtn2.querySelector('span:nth-child(2)').textContent='Off-Page SEO';sBtn2.classList.remove('on');}
+  // restore the active platform highlight
+  var pOpts=document.querySelectorAll('#platOpts .p-opt');
+  pOpts.forEach(function(b){b.classList.remove('on');});
+  if(platform==='ebay'&&pOpts[0])pOpts[0].classList.add('on');
+  else if(platform==='shopify'&&pOpts[1])pOpts[1].classList.add('on');
+}
+
+function renderOffPageSEO(text, productTitle){
+  // Switch to SEO-only layout
+  document.getElementById('outSplit').className='out-split seo-only';
+  document.getElementById('lPane').classList.add('full-width');
+  document.getElementById('hPane').style.display='none';
+  document.getElementById('lPaneTitle').textContent='🚀 Off-Page SEO Strategy — '+productTitle.slice(0,40);
+
+  var tabsEl=document.getElementById('stabs');
+  var cntEl=document.getElementById('secCnt');
+  tabsEl.innerHTML=''; cntEl.innerHTML='';
+
+  var SECTIONS=[
+    {key:'WHERE TO FOCUS',                       label:'Strategy',     icon:'🎯', color:'cP'},
+    {key:'PINTEREST PINS (COPY READY)',          label:'Pinterest',    icon:'📌', color:'c5'},
+    {key:'INSTAGRAM AND FACEBOOK POSTS (COPY READY)', label:'IG/FB Posts', icon:'📱', color:'c3'},
+    {key:'REDDIT AND QUORA (COPY READY)',        label:'Reddit/Quora', icon:'💬', color:'c4'},
+    {key:'BLOGGER OUTREACH EMAIL (COPY READY)',  label:'Outreach Email', icon:'📧', color:'cP'},
+    {key:'BACKLINK IDEAS',                       label:'Backlinks',    icon:'🔗', color:'c2'},
+    {key:'7-DAY ACTION CHECKLIST',               label:'7-Day Plan',   icon:'✅', color:'cS'},
+  ];
+
+  // Parse sections
+  var parsed={};
+  var cur=null, buf=[];
+  var keys=SECTIONS.map(function(s){return s.key;});
+  text.split('\n').forEach(function(line){
+    var cl=line.trim().toUpperCase();
+    if(keys.indexOf(cl)>-1){if(cur)parsed[cur]=buf.join('\n').trim();cur=cl;buf=[];}
+    else if(cur){buf.push(line);}
+  });
+  if(cur) parsed[cur]=buf.join('\n').trim();
+
+  // Build ALL tab first
+  var allTab=document.createElement('button');
+  allTab.className='stab seo-tab on';
+  allTab.textContent='📋 Full Report';
+  var allSec=document.createElement('div');
+  allSec.className='ssec on'; allSec.id='seo-all';
+  allTab.onclick=function(){switchSeoTab(allTab,'seo-all');};
+  tabsEl.appendChild(allTab);
+
+  // Full report content
+  var fullHtml='<div style="padding:10px 14px;background:rgba(244,114,182,0.06);border:1px solid rgba(244,114,182,0.2);border-radius:var(--r);margin-bottom:14px;font-size:11px;color:var(--seo);line-height:1.6;">'
+    +'<strong style="color:var(--seo2);">🚀 Off-Page SEO Strategy</strong> — Product: <em>'+escHtml(productTitle.slice(0,60))+'</em><br>'
+    +'Complete strategy for building authority, backlinks and organic traffic outside your listing.'
+    +'</div>';
+
+  SECTIONS.forEach(function(sec){
+    var content=parsed[sec.key];
+    if(!content) return;
+    fullHtml+='<div class="seo-card">'
+      +'<div class="seo-card-hdr"><span class="seo-card-icon">'+sec.icon+'</span><span class="seo-card-title">'+sec.label+'</span></div>'
+      +'<div class="seo-card-body"><div class="ob-body" style="padding:0;">'+formatSeoContent(content, sec.key)+'</div></div>'
+      +'</div>';
+  });
+
+  // Copy all button
+  fullHtml+='<div style="display:flex;gap:8px;margin-top:4px;">'
+    +'<button class="ib pink" style="width:100%;justify-content:center;" onclick="cpTxt(seoTxt,this)">📋 Copy Full SEO Report</button>'
+    +'</div>';
+  allSec.innerHTML=fullHtml;
+  cntEl.appendChild(allSec);
+
+  // Individual tabs
+  SECTIONS.forEach(function(sec,i){
+    var content=parsed[sec.key];
+    if(!content) return;
+    var tb=document.createElement('button');
+    tb.className='stab seo-tab';
+    tb.textContent=sec.icon+' '+sec.label;
+    var secId='seo-sec-'+i;
+    tb.onclick=function(){switchSeoTab(tb,secId);};
+    tabsEl.appendChild(tb);
+
+    var div=document.createElement('div');
+    div.className='ssec'; div.id=secId;
+    var safe=content.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+    div.innerHTML='<div class="seo-card">'
+      +'<div class="seo-card-hdr"><span class="seo-card-icon">'+sec.icon+'</span><span class="seo-card-title">'+sec.label+'</span>'
+      +'<button class="ib pink" style="margin-left:auto;" onclick="cpTxt(`'+safe+'`,this)">Copy</button></div>'
+      +'<div class="seo-card-body"><div class="ob-body" style="padding:0;">'+formatSeoContent(content, sec.key)+'</div></div>'
+      +'</div>';
+    cntEl.appendChild(div);
+  });
+}
+
+function formatSeoContent(text, key){
+  var esc=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // Highlight numbered items
+  esc=esc.replace(/^(\d+\.)\s+/gm,'<span style="color:var(--seo);font-weight:600;font-family:\'Geist Mono\',monospace;">$1</span> ');
+  // Highlight field labels in copy-ready templates
+  esc=esc.replace(/^(Pin Title|Description|Hashtags|Subject|Caption|Subject Line):/gim,'<span style="color:var(--seo2);font-weight:600;">$1:</span>');
+  // Highlight subreddit names
+  esc=esc.replace(/\b(r\/\w+)\b/g,'<span style="color:var(--teal);">$1</span>');
+  // Highlight Day labels in checklist
+  esc=esc.replace(/^(Day \d+):/gim,'<span style="color:var(--shopify2);font-weight:600;">$1:</span>');
+  return esc;
+}
+
+function switchSeoTab(btn,id){
+  document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.ssec').forEach(function(s){s.classList.remove('on');});
+  btn.classList.add('on');
+  var el=document.getElementById(id);
+  if(el) el.classList.add('on');
+}
+
+// ─── MAIN LISTING GENERATOR ──────────────────────────────
+async function generate(){
+  var apiKey=document.getElementById('apiKey').value.trim();
+  var product=document.getElementById('productInput').value.trim();
+  var compTitle=document.getElementById('compTitle').value.trim();
+  var policy=document.getElementById('policyText').value.trim();
+  var store='';
+  localStorage.setItem('slf_po',policy);
+  lastProduct=product; lastStore=store;
+
+  if(!apiKey||apiKey.indexOf('AIza')!==0){showErr('⚠ API key missing.');return;}
+  if(!product||product.length<15){showErr('⚠ Please paste product details.');return;}
+
+  closeSidebarMobile();
+  hideErr(); setLoading(true);
+  document.getElementById('prog').classList.add('show');
+  document.getElementById('kwFound').classList.remove('show');
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('output').classList.remove('show');
+  fullTxt=''; genHtml=''; allKws=[]; shopifyTxt=''; tiktokTxt='';
+
+  // STEP 1
+  setStep(1); setChip('work','Researching keywords...');
+  srcReal={ebay:false,amazon:false,walmart:false,google:false};
+  ['ebay','amazon','walmart','google'].forEach(function(id){kwSt(id,'go');});
+  var q=product.split('\n')[0].replace(/title:/i,'').trim().split(' ').slice(0,7).join(' ');
+  var kwr=await fetchAllKeywords(apiKey,q);
+  srcKws.ebay=kwr.ebay; srcKws.amazon=kwr.amazon; srcKws.walmart=kwr.walmart; srcKws.google=kwr.google;
+  kwSt('ebay',kwr.ebay.length>0?'ok':'no',kwr.ebay.length);
+  kwSt('amazon',kwr.amazon.length>0?'ok':'no',kwr.amazon.length);
+  kwSt('walmart',kwr.walmart.length>0?'ok':'no',kwr.walmart.length);
+  kwSt('google',kwr.google.length>0?'ok':'no',kwr.google.length);
+  var seen={},merged=[];
+  [kwr.ebay,kwr.amazon,kwr.walmart,kwr.google].forEach(function(arr){arr.forEach(function(kw){var k=kw.toLowerCase().trim();if(!seen[k]&&k.length>2){seen[k]=1;merged.push(kw);}});});
+  allKws=merged.slice(0,30);
+  // eBay-specific keywords get priority in the TITLE (these are what eBay buyers actually search)
+  var ebayKws=[]; var ebSeen={};
+  (kwr.ebay||[]).forEach(function(kw){var k=kw.toLowerCase().trim();if(!ebSeen[k]&&k.length>2){ebSeen[k]=1;ebayKws.push(kw);}});
+  ebayKws=ebayKws.slice(0,15);
+  window.slfEbayKws = ebayKws;
+
+  if(allKws.length>0){
+    var totalRaw=kwr.ebay.length+kwr.amazon.length+kwr.walmart.length+kwr.google.length;
+    var kf=document.getElementById('kwFound');
+    kf.innerHTML='<div class="kw-ft">✓ '+totalRaw+' Keywords Fetched ('+allKws.length+' Unique)</div>'+allKws.map(function(k,i){var d=Math.min(i*22,400);return '<span class="kw-pill" style="animation-delay:'+d+'ms;">'+k+'</span>';}).join('');
+    kf.classList.add('show');
+  }
+
+  // STEP 2
+  setStep(2); setChip('work','Writing listing...');
+
+  if(platform==='ebay'){
+    var kwLine=allKws.length>0?'\n\nREAL BUYER KEYWORDS:\n'+allKws.join(' | '):'';
+    if(ebayKws.length>0){
+      kwLine += '\n\neBay TOP-SEARCH KEYWORDS (highest priority for the TITLE — these are what eBay buyers actually type):\n'+ebayKws.join(' | ');
+    }
+
+    // Brand comes ONLY from the Brand Name box — the user is in full control.
+    // Box filled  => brand MUST appear in HTML HEADING + DESCRIPTION + ITEM SPECIFICS (never eBay title).
+    // Box empty   => no brand anywhere; ITEM SPECIFICS Brand: Unbranded.
+    var brandGuess = (document.getElementById('brandName').value||'').trim().slice(0,40);
+    var brandInTitle = brandGuess && document.getElementById('brandInTitle').checked;
+    var brandDemand = detectBrandDemand(brandGuess, allKws);
+    var isVeroBrand = brandGuess && (typeof slfIsBrandWord==='function') && brandGuess.split(/\s+/).some(function(w){return slfIsBrandWord(w);});
+    var brandLine;
+    if(!brandGuess){
+      brandLine = '\n\nBRAND (USER SETTING): The user left the Brand box EMPTY. Do NOT mention any brand name anywhere — not in the title, not in the HTML heading, not in the description. In ITEM SPECIFICS set Brand to "Unbranded". Never invent or infer a brand, even if one appears in the source text.';
+    } else if(isVeroBrand){
+      brandLine = '\n\nBRAND (USER SETTING): The user set the brand to "'+brandGuess+'" — note this is a well-known brand with high VeRO enforcement risk, so word it factually only. You MUST include it: start the HTML HEADING with it, mention it naturally in the DESCRIPTION, and set "Brand: '+brandGuess+'" in ITEM SPECIFICS. Never in the eBay title. Never claim official/authorised/licensed status.';
+    } else if(brandDemand.searched){
+      brandLine = '\n\nBRAND (USER SETTING): The user set the brand to "'+brandGuess+'" and buyers ARE searching for it ('+brandDemand.note+'). MANDATORY: start the HTML HEADING with "'+brandGuess+'", weave it naturally into the DESCRIPTION 2-3 times for SEO, and set "Brand: '+brandGuess+'" as the first line of ITEM SPECIFICS. Never in the eBay title.';
+    } else {
+      brandLine = '\n\nBRAND (USER SETTING): The user set the brand to "'+brandGuess+'". MANDATORY even though few buyers search it: include "'+brandGuess+'" in the HTML HEADING (start with it), mention it once naturally in the DESCRIPTION, and set "Brand: '+brandGuess+'" as the first line of ITEM SPECIFICS. Never in the eBay title.';
+    }
+    if(brandInTitle){
+      brandLine = '\n\nBRAND (USER SETTING): Brand is "'+brandGuess+'" and the user explicitly wants it in the MAIN eBay TITLE too (buyers search this brand by name). MANDATORY: START the eBay title with "'+brandGuess+'", then fill the remaining space to 76-80 characters with the top eBay-searched keywords. Also start the HTML HEADING with "'+brandGuess+'", weave it naturally into the DESCRIPTION, and set "Brand: '+brandGuess+'" as the first line of ITEM SPECIFICS. Word everything factually — never claim official/authorised/licensed status.';
+    }
+    kwLine += brandLine;
+    var MARKET_LINES = {
+      gb: 'MARKET: eBay UK (ebay.co.uk). Use British English spelling (colour, organise, personalise, favourite). Use GBP (£) for any prices. Use UK terms and sizes where relevant.',
+      au: 'MARKET: eBay Australia (ebay.com.au). Use Australian English spelling (colour, organise, tyre, aluminium). Use AUD ($) for any prices. Use metric units and Australian terms where relevant.',
+      us: 'MARKET: eBay US (ebay.com). Use American English spelling. Use USD ($) for any prices.'
+    };
+    var marketLine = MARKET_LINES[market] || MARKET_LINES.us;
+    var ebayPrompt='You are a world-class E-commerce SEO Copywriter. 2026-ready.\n'
+    +marketLine+'\n'
+    +'TARGET: eBay ONLY. Cassini algorithm optimized.'+kwLine+'\n\n'
+    +'=== eBay VeRO / INTELLECTUAL PROPERTY COMPLIANCE — HIGHEST PRIORITY ===\n'
+    +'eBay\'s Verified Rights Owner (VeRO) program lets brands remove listings that misuse their IP. A single violation can remove the listing; repeats can suspend the account. Intent does not matter to eBay. You MUST write this listing so it cannot trigger a VeRO report:\n'
+    +'1. NEVER use these counterfeit-signal words anywhere: replica, knockoff, knock off, clone, fake, copy of, inspired by, style of, 1:1, AAA quality, mirror image.\n'
+    +'2. NEVER imply an unauthorised brand association. Do not say a generic item is "like [Brand]", "same as [Brand]", or "[Brand] style".\n'
+    +'3. Do NOT insert third-party brand names for SEO. Only mention a brand if the SOURCE DATA proves the item genuinely IS that brand.\n'
+    +'4. If the item is a genuine branded product per the source data, you may name the brand factually — but never claim authorised dealer, official, licensed, or partnership status.\n'
+    +'5. For compatibility, use neutral wording: "Fits [model]" or "For use with [model]". Never suggest the item is made or endorsed by that brand.\n'
+    +'6. Do NOT use protected characters, franchises, teams or logos (Disney, Marvel, Pokemon, sports leagues, etc.) unless the source data proves it is officially licensed stock.\n'
+    +'7. Do NOT claim "authentic", "genuine", or "original" unless the source data supports it.\n'
+    +'8. Write 100% original copy. Never copy a competitor\'s description text.\n'
+    +'9. If the competitor title provided contains brand names your product is not, do NOT copy those brand names into your title.\n'
+    +'When unsure, choose the safer, brand-free wording. A slightly less keyword-rich listing that stays live beats an optimised listing that gets removed.\n\n'
+    +'CRITICAL: NO backticks, NO markdown (##, **, *), NO --- separators. Plain text only.\n\n'
+    +'Use EXACTLY these === markers:\n\n'
+    +'=== BRAND CHECK ===\nUse the BRAND DEMAND guidance above to decide. Output:\nBrand: [name or Unbranded] | Searched by buyers: [Yes/No] | VeRO Risk: [High/Medium/Low] | Placement: [where you will mention it: Description + Item Specifics / Item Specifics only / Unbranded]\nReason: [one short line explaining your decision]\n\n'
+    +'=== TITLE ===\n'
+    +'eBay Title — RULE 1 (LENGTH): the title MUST be between 76 and 80 characters including spaces. This is mandatory. A title under 75 characters wastes valuable eBay search space and is REJECTED. Count carefully. NO punctuation. Every word must be complete.\n'
+    +(brandInTitle
+      ? 'eBay Title — RULE 2 (BRAND IN TITLE): the user wants the brand "'+brandGuess+'" in this title. Put it at the very FRONT, then maximise remaining space with top eBay keywords to reach 76-80 characters.\n'
+      : 'eBay Title — RULE 2 (NO BRAND NAMES): do NOT put any brand or manufacturer name in the title. Brand names eat characters that buyers rarely search for, and they raise VeRO risk. Use that space for real buyer keywords instead. The brand belongs in the HTML HEADING, the DESCRIPTION, and the Brand field of ITEM SPECIFICS — never this eBay title.\n')
+    +'eBay Title — RULE 3 (MAX KEYWORDS, eBay FIRST): fill all 76-80 characters with high-value buyer search terms. PRIORITISE the eBay TOP-SEARCH KEYWORDS first — these are exactly what eBay buyers type, so they make the title strongest for eBay ranking. Put the most important eBay keywords near the FRONT of the title. Then fill remaining space with the other buyer keywords (product type, material, size, quantity, colour, feature, use-case). Pack in as many distinct keywords as read naturally. If short, ADD more until 76-80 characters.\n'
+    +(compTitle ? 'BEAT THIS COMPETITOR: A top-selling competitor uses this eBay title: "'+compTitle.replace(/"/g,'')+'". Analyze it. Your title MUST be more SEO-optimized: include every strong keyword they use that fits this product, PLUS additional high-value buyer keywords they missed, in a better order. Do not copy it word-for-word — make it genuinely stronger and still 76-80 characters.\n' : '')
+    +'[title here — must be 76 to 80 characters]\n\n'
+    +'=== HTML HEADING ===\n'
+    +'A natural, readable product heading for the listing page (100-130 characters). Unlike the eBay title, this has more room — weave in 2-3 EXTRA buyer keywords naturally so it reads like a real product name, NOT a comma-separated keyword list. BRAND RULE: if the source data shows a brand name, START this heading with the brand (e.g. "Mainstays Cotton Bath Towel Set...") — the brand belongs HERE, not in the eBay title. If VeRO risk is high, only use the brand if the item genuinely is that brand. Use Title Case. NO trailing comma.\n[heading here]\n\n'
+    +'=== DESCRIPTION ===\nTwo paragraphs. Hook + value. **bold** key phrases. BRAND RULE: if the source data shows a brand name, mention it naturally here at least once (popular or not) — the description is where the brand lives. If buyers actively search the brand (see BRAND DEMAND), weave it in 2-3 times for SEO. Never put the brand in the eBay title.\n\n'
+    +'=== ITEM SPECIFICS ===\n'
+    +'eBay Item Specifics in EXACT "Field: Value" format, one per line. These map to eBay\'s structured search filters, so use eBay\'s real field names. MANDATORY: the FIRST line must ALWAYS be the Brand field — include it every single time whether the brand is popular or not. If the source data shows a brand name, use that exact brand here (even if it is a no-name or unknown brand). Only if there is truly no brand at all in the source data, use "Brand: Unbranded". Never omit the Brand line. Then include ALL other fields that apply: Type, Material, Color, MPN, Model, Quantity, Size, Compatible Brand, Compatible Model, Placement on Vehicle, Features, Country/Region of Manufacture, Department, Style, Custom Bundle, Manufacturer Part Number. Only include fields relevant to THIS product. For compatibility use "For [Brand]" format. Example:\nBrand: Mainstays\nType: Oil Drain Plug O-Ring\nMaterial: Rubber\nQuantity: 50 Pieces\nCompatible Brand: For Harley Davidson\nMPN: 11105\n\n'
+    +'=== KEY FEATURES ===\n8 bullets: ✅ [Benefit] — [Detail]\n\n'
+    +'=== SPECIFICATIONS ===\nEach spec on own line: Label: Value\n\n'
+    +'=== COMPATIBLE MODELS ===\nCONDITIONAL SECTION: ONLY output this section if the RAW SOURCE DATA lists compatible models, vehicles, devices, machines, part numbers or years. If it does, you MUST list EVERY SINGLE compatible model from the source data COMPLETELY — never summarize, compress, shorten, or write "and more". Copy the full compatibility list, organised one model (or model-group) per line, grouped by brand/series where natural. This list is valuable SEO content and buyers search by exact model. If the source data has no compatibility list, OMIT this entire section (do not even print the header).\n\n'
+    +'=== SAFETY INFORMATION ===\nCONDITIONAL SECTION: ONLY output this section if the RAW SOURCE DATA contains safety information — warnings, hazard notes, choking/age warnings, battery/chemical warnings, California Prop 65 notices, usage cautions, care/safety instructions. Reproduce them ACCURATELY and COMPLETELY (do not soften, shorten or drop any warning — these can be legally required). One point per line. If the source data has no safety information, OMIT this entire section (do not print the header).\n\n'
+    +'=== PRO TIPS ===\n5 practical tips numbered: 1. tip\n\n'
+    +'=== IDEAL FOR ===\n12 tags, one per line with — prefix\n\n'
+    +'=== POLICIES ===\n'+policy+'\n\n'
+    +'=== SEO METADATA ===\nMeta Title: (under 60 chars)\nMeta Description: (50-160 chars)\nURL Handle: (dashes only)\n\n'
+    +'=== TAGS ===\neBay Keywords: (10 terms)\nSocial Hashtags: (10 hashtags)\n\n'
+    +'=== RAW SOURCE DATA ===\n'+product;
+    try{var r=await claudeCall(apiKey,ebayPrompt,4500);fullTxt=r;}
+    catch(e){showErr('API Error: '+e.message);setLoading(false);return;}
+  }
+
+  if(platform==='shopify'){
+    var kwLineS=allKws.length>0?'\n\nKEYWORDS TO USE:\n'+allKws.join(', '):'';
+    var shopifyPrompt='You are a Shopify SEO Copywriter for 2026.\n'
+    +'CRITICAL RULES: NO markdown (*,**,#,>,`,~,_). NO dashes as list markers. NO em/en dashes. Section headings ALL CAPS on own line.\n'
+    +kwLineS+'\n\n'
+    +'SHOPIFY TITLE\n\n[50-70 char title]\n\n'
+    +'DESCRIPTION\n\n[2 paragraphs plain text]\n\n'
+    +'KEY FEATURES\n\n1. Feature one\n2. Feature two\n[etc]\n\n'
+    +'SPECIFICATIONS\n\nBrand: value\nMaterial: value\n[etc]\n\n'
+    +'SHIPPING AND RETURNS\n\n'+policy.replace(/[🚚🆓🔄*_#]/g,'').trim()+'\n\n'
+    +'SEO METADATA\n\nMeta Title: [under 30 chars]\nMeta Description: [over 160 chars]\nURL Handle: [lowercase hyphens]\n\n'
+    +'SHOPIFY TAGS\n\n[15-20 comma-separated tags]\n\n'
+    +'SOCIAL HASHTAGS\n\n[10 hashtags]\n\n'
+    +'RAW SOURCE DATA:\n'+product;
+    try{var rs=await claudeCall(apiKey,shopifyPrompt,2500);shopifyTxt=rs;}
+    catch(e){showErr('API Error: '+e.message);setLoading(false);return;}
+  }
+
+  if(platform==='tiktok'){
+    var kwLineT=allKws.length>0?'\n\nREAL BUYER KEYWORDS (from live Google/Amazon/eBay data):\n'+allKws.join(' | '):'';
+    if(window.slfTikTokKws && window.slfTikTokKws.length>0){
+      kwLineT += '\n\nTIKTOK-SEARCHED KEYWORDS (HIGHEST PRIORITY — real TikTok-context searches): '+window.slfTikTokKws.join(' | ')+'\nHow to use them: product-type phrases go into the TITLE and SEARCH TERMS; problem/how-to phrases (like "jar wont open") belong in the DESCRIPTION opening (problem-solution hook) — do not force awkward how-to phrases into the title.';
+    }
+    var brandT=(document.getElementById('brandName').value||'').trim().slice(0,40);
+    var brandTitleT = brandT && document.getElementById('brandInTitle').checked;
+    var brandLineT = brandT
+      ? (brandTitleT
+        ? '\n\nBRAND (USER SETTING): Brand is "'+brandT+'" and the user wants it in the TITLE too — START the title with it, then continue with keywords. Also mention it in the DESCRIPTION and set "Brand: '+brandT+'" first in PRODUCT ATTRIBUTES.'
+        : '\n\nBRAND (USER SETTING): Brand is "'+brandT+'". Do NOT put it in the TITLE. DO mention it naturally once in the DESCRIPTION and set "Brand: '+brandT+'" as the first line of PRODUCT ATTRIBUTES.')
+      : '\n\nBRAND (USER SETTING): Brand box is EMPTY. Do NOT mention any brand anywhere. In PRODUCT ATTRIBUTES set Brand: Unbranded. Never invent a brand.';
+    var tiktokPrompt='You are a TikTok Shop USA listing expert for 2026. TikTok Shop is a social-commerce search engine: buyers search casual phrases ("jar opener for weak grip", "kitchen must haves"). Listings are ranked by title relevance, search terms, and listing quality tier.\n'
+    +'MARKET: TikTok Shop USA. American English. USD.\n'
+    +'CRITICAL: NO markdown symbols (*,**,#,>,`). Use EXACTLY these === section markers.\n'
+    +kwLineT+brandLineT+'\n\n'
+    +'=== eBay-style VeRO / IP COMPLIANCE ALSO APPLIES: no counterfeit words (replica, inspired by, 1:1, AAA), no unauthorised brand names, no protected characters/franchises, 100% original copy. TikTok screens counterfeits strictly. ===\n\n'
+    +'=== CATEGORY ===\n'
+    +'Pick the best TikTok Shop US category path for this product from this L1 list (then suggest the deeper L2 > L3 path from your knowledge):\n'+TIKTOK_CATS.join('\n')+'\n'
+    +'Output format:\nBest: [L1] > [L2] > [L3]\nAlternate: [L1] > [L2] > [L3]\nNote: [one line why + reminder to confirm in Seller Center dropdown]\n\n'
+    +'=== TITLE ===\n'
+    +'TikTok Shop title, 200 to 255 characters. RULES: (1) READABLE natural language, NOT comma-stuffed — complete keyword phrases woven into a flowing product title. (2) The product type + most important attribute MUST be in the first 30-40 characters (mobile cutoff). (3) Title Case (capitalize each word except with/at/by/to/in/for/from/of/and/or/the/a/an). (4) Abbreviate measurements (oz, in, cm, kg). (5) Use the most-searched buyer keywords naturally. (6) NO brand names. (7) No medical condition words (arthritis, pain relief), no effect claims (effortless, guaranteed), no superlatives (best, #1). (8) Aim for 230-255 characters — use the full space with complete, readable keyword phrases.\n[title here]\n\n'
+    +'=== SEARCH TERMS ===\n'
+    +'EXACTLY 12-15 keywords, comma-separated, TOTAL under 250 characters including commas. COMPLIANCE RULES (TikTok rejects non-compliant terms): (1) Every term must describe THIS exact product type — never a different product (if it is a jar opener, "can opener" is NON-COMPLIANT). (2) NO medical/health condition words: arthritis, pain, relief, cure, treat, therapy, arthritic, seniors health. (3) NO effect/outcome claims: effortless, guaranteed, instant, miracle. (4) NO superlatives: best, top, #1, cheapest. (5) NO brand names. (6) Short real buyer phrases, 1-3 words each, all lowercase.\n[keyword1,keyword2,...]\n\n'
+    +'=== DESCRIPTION ===\n'
+    +'600-1200 characters. Mobile-first scannable: 2-3 SHORT paragraphs then 4-6 bullet lines (use plain lines, no dash symbols needed). Problem-solution style, USPs, persuasive but truthful (all claims verifiable). Include buyer keywords naturally. No medical claims.\n\n'
+    +'=== KEY SELLING POINTS ===\n'
+    +'5 punchy selling points, each UNDER 250 characters, numbered 1-5. Benefit-first.\n\n'
+    +'=== PRODUCT ATTRIBUTES ===\n'
+    +'Field: Value per line. Brand first (per BRAND setting), then Material, Color, Size, Quantity, Style, Occasion, Care Instructions — only fields relevant to this product.\n\n'
+    +'=== HASHTAGS ===\n'
+    +'10 TikTok hashtags: mix of product keywords + discovery tags (like TikTokMadeMeBuyIt style, kitchenfinds style). Format: #tag1 #tag2 ...\n\n'
+    +'RAW SOURCE DATA:\n'+product;
+    try{var rt=await claudeCall(apiKey,tiktokPrompt,3500);tiktokTxt=rt;}
+    catch(e){showErr('API Error: '+e.message);setLoading(false);return;}
+  }
+
+  // STEP 3
+  setStep(3); setChip('work','Building output...');
+
+  if(platform==='ebay'){
+    try{genHtml=buildHtmlFromListing(fullTxt,store,resolveTheme(theme));}
+    catch(e){genHtml='<html><body style="padding:40px;font-family:sans-serif;"><h2>Build error: '+e.message+'</h2></body></html>';}
+    renderEbayOnly(fullTxt);
+  } else if(platform==='tiktok'){
+    renderTikTokOnly(tiktokTxt);
+  } else {
+    renderShopifyOnly(shopifyTxt);
+  }
+
+  renderKeywords();
+  if(platform==='ebay'){ renderQualityScore(fullTxt); renderCompetitors(); renderVeroCheck(fullTxt); }
+  setLoading(false);
+  document.getElementById('prog').classList.remove('show');
+  document.getElementById('output').classList.add('show');
+  setChip('done','Done!');
+  saveSession(); // auto-save the completed work
+  setTimeout(function(){document.getElementById('mainArea').scrollTo({top:document.getElementById('output').offsetTop-10,behavior:'smooth'});},80);
+}
+
+// ── Auto-save / restore session (survives accidental tab close) ──
+function saveSession(){
+  try{
+    var data={
+      product: document.getElementById('productInput').value,
+      compTitle: document.getElementById('compTitle').value,
+      brandName: document.getElementById('brandName').value,
+      brandInTitle: document.getElementById('brandInTitle').checked,
+      imgUrls: document.getElementById('imgUrls').value,
+      platform: platform,
+      theme: theme,
+      fullTxt: fullTxt,
+      genHtml: genHtml,
+      shopifyTxt: shopifyTxt,
+      tiktokTxt: tiktokTxt,
+      allKws: allKws,
+      competitors: lastCompetitors,
+      savedAt: Date.now()
+    };
+    localStorage.setItem('slf_session', JSON.stringify(data));
+    updateRestoreBtn();
+  }catch(e){ console.error('Save failed:', e.message); }
+}
+
+// Lightweight draft save (just the typed product text) — runs as user types
+var _draftTimer=null;
+function saveDraftDebounced(){
+  clearTimeout(_draftTimer);
+  _draftTimer=setTimeout(function(){
+    try{
+      var raw=localStorage.getItem('slf_session');
+      var data = raw ? JSON.parse(raw) : {};
+      data.product = document.getElementById('productInput').value;
+      data.compTitle = document.getElementById('compTitle').value;
+      data.brandName = document.getElementById('brandName').value;
+      data.brandInTitle = document.getElementById('brandInTitle').checked;
+      data.imgUrls = document.getElementById('imgUrls').value;
+      data.savedAt = Date.now();
+      localStorage.setItem('slf_session', JSON.stringify(data));
+      updateRestoreBtn();
+    }catch(e){}
+  }, 500);
+}
+
+function restoreSession(){
+  try{
+    var raw=localStorage.getItem('slf_session');
+    if(!raw) return;
+    var d=JSON.parse(raw);
+    // Restore typed product text even if no listing was generated yet
+    if(d.product){
+      document.getElementById('productInput').value = d.product;
+      updateCharCount();
+    }
+    if(d.compTitle){ document.getElementById('compTitle').value = d.compTitle; }
+    if(d.brandName){ document.getElementById('brandName').value = d.brandName; }
+    if(typeof d.brandInTitle==='boolean'){ document.getElementById('brandInTitle').checked = d.brandInTitle; }
+    if(d.imgUrls){ document.getElementById('imgUrls').value = d.imgUrls; if(typeof onImagesInput==='function'){var note=document.getElementById('imgUrlsNote');} }
+    // If a full listing was generated, restore the output too
+    if(d.fullTxt || d.shopifyTxt || d.tiktokTxt){
+      platform = d.platform||'ebay';
+      theme = d.theme||'heritage';
+      fullTxt = d.fullTxt||'';
+      genHtml = d.genHtml||'';
+      shopifyTxt = d.shopifyTxt||'';
+      tiktokTxt = d.tiktokTxt||'';
+      allKws = d.allKws||[];
+      lastCompetitors = d.competitors||[];
+      if(platform==='ebay' && fullTxt){
+        renderEbayOnly(fullTxt);
+        renderKeywords();
+        renderQualityScore(fullTxt);
+        renderCompetitors();
+        renderVeroCheck(fullTxt);
+      } else if(platform==='tiktok' && tiktokTxt){
+        renderTikTokOnly(tiktokTxt);
+        renderKeywords();
+      } else if(platform==='shopify' && shopifyTxt){
+        renderShopifyOnly(shopifyTxt);
+        renderKeywords();
+      }
+      document.getElementById('output').classList.add('show');
+      setChip('done','Restored');
+    }
+  }catch(e){ console.error('Restore failed:', e.message); }
+}
+
+function updateRestoreBtn(){
+  var btn=document.getElementById('restoreBtn');
+  if(!btn) return;
+  var has=false;
+  try{
+    var raw=localStorage.getItem('slf_session');
+    if(raw){var d=JSON.parse(raw); has=!!((d.product&&d.product.trim().length>0)||d.fullTxt||d.shopifyTxt||d.tiktokTxt);}
+  }catch(e){}
+  btn.style.display = has ? 'flex' : 'none';
+}
+
+function clearSession(){
+  localStorage.removeItem('slf_session');
+  updateRestoreBtn();
+}
+
+function updateCharCount(){
+  var el=document.getElementById('productInput');
+  document.getElementById('charCt').textContent=el.value.length+' chars';
+}
+
+function clearAndStartNew(){
+  pendingAction='newsession'; pendingBtn=null;
+  document.getElementById('confirmIcon').textContent='↺';
+  document.getElementById('confirmTitle').textContent='Start New Listing?';
+  document.getElementById('confirmMsg').textContent='This will clear your current saved work (product details and generated listing) so you can start fresh. This cannot be undone. Continue?';
+  document.getElementById('confirmYesBtn').textContent='Yes, Clear';
+  openConfirm();
+}
+function renderEbayOnly(listingText){
+  document.getElementById('outSplit').className='out-split';
+  document.getElementById('lPane').classList.remove('full-width');
+  document.getElementById('hPane').style.display='flex';
+  document.getElementById('lPaneTitle').textContent='📋 eBay SEO Listing';
+  document.getElementById('hPaneTitle').textContent='🌐 HTML Listing — eBay Paste Ready';
+  document.getElementById('hPaneActs').innerHTML='<button class="ib gold" id="cpHtmlBtn" onclick="copyHtml()">Copy HTML</button><button class="ib" onclick="dlHtml()">⬇ Download</button>';
+  document.getElementById('vtabsRow').style.display='flex';
+  renderListing(listingText);
+  renderHtml(genHtml);
+}
+
+function renderTikTokOnly(tiktokText){
+  document.getElementById('outSplit').className='out-split shopify-only';
+  document.getElementById('lPane').classList.add('full-width');
+  document.getElementById('hPane').style.display='none';
+  document.getElementById('lPaneTitle').textContent='📱 TikTok Shop US Listing — Copy Ready';
+  renderTikTokListing(tiktokText);
+}
+
+function parseTikTokSections(text){
+  var KEYS=['CATEGORY','TITLE','SEARCH TERMS','DESCRIPTION','KEY SELLING POINTS','PRODUCT ATTRIBUTES','HASHTAGS'];
+  var out={},cur=null,buf=[];
+  text.split('\n').forEach(function(line){
+    var cl=line.replace(/^#+\s*/,'').replace(/\*\*/g,'').replace(/===\s*/g,'').replace(/\s*===/g,'').trim().toUpperCase();
+    if(KEYS.indexOf(cl)>-1){if(cur)out[cur]=buf.join('\n').trim();cur=cl;buf=[];}
+    else if(cur)buf.push(line);
+  });
+  if(cur)out[cur]=buf.join('\n').trim();
+  return out;
+}
+
+function renderTikTokListing(tiktokText){
+  var tabsEl=document.getElementById('stabs'), cntEl=document.getElementById('secCnt');
+  tabsEl.innerHTML=''; cntEl.innerHTML='';
+  var S=parseTikTokSections(tiktokText);
+  Object.keys(S).forEach(function(k){S[k]=cleanShopifyText(S[k]);});
+
+  function mkTab(label,secId,onFirst){
+    var tb=document.createElement('button'); tb.className='stab shopify-tab'+(onFirst?' on':''); tb.textContent=label;
+    tb.onclick=function(){document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.ssec').forEach(function(s){s.classList.remove('on');});tb.classList.add('on');document.getElementById(secId).classList.add('on');};
+    tabsEl.appendChild(tb); return tb;
+  }
+  function mkSec(secId,inner,onFirst){
+    var div=document.createElement('div'); div.className='ssec'+(onFirst?' on':''); div.id=secId; div.innerHTML=inner; cntEl.appendChild(div); return div;
+  }
+  function copyBox(label,cls,content){
+    var safe=content.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+    return '<div class="shopify-preview-box"><div class="ob-hdr"><span class="ob-lbl '+cls+'">'+label+'</span><button class="ib green" onclick="cpTxt(`'+safe+'`,this)">Copy</button></div><div class="shopify-copy-area">'+escHtml(content)+'</div></div>';
+  }
+
+  // Tab 1: Category
+  if(S['CATEGORY']){ mkTab('📂 Category','tt-cat',true); mkSec('tt-cat',copyBox('Suggested Category','cS',S['CATEGORY']),true); }
+
+  // Tab 2: Title with live char counter (target 200-255)
+  if(S['TITLE']){
+    var t=S['TITLE'].split('\n')[0].trim();
+    var tl=t.length;
+    var tcol = (tl>=200&&tl<=255)?'#4ade80':(tl>=150?'#fbbf24':'#fb7185');
+    var tmsg = (tl>=200&&tl<=255)?'Perfect length':(tl>255?'TOO LONG — trim to 255':'Short — TikTok allows up to 255, use more complete keywords');
+    var inner='<div style="margin-bottom:10px;padding:10px 14px;border:1px solid '+tcol+';border-radius:9px;display:flex;justify-content:space-between;align-items:center;"><span style="color:'+tcol+';font-weight:700;font-size:12px;">'+tl+'/255 <span style="font-weight:400;">'+tmsg+'</span></span><span style="font-size:9px;color:var(--dim);">TikTok limit: 255</span></div>'+copyBox('TikTok Title','c2',t);
+    mkTab('Title','tt-title',false); mkSec('tt-title',inner,false);
+  }
+
+  // Tab 3: Search Terms with compliance counters (max 15 kws, 250 chars)
+  if(S['SEARCH TERMS']){
+    var st=S['SEARCH TERMS'].split('\n')[0].trim();
+    var kws=st.split(',').map(function(k){return k.trim();}).filter(Boolean);
+    var stLen=st.length, kn=kws.length;
+    var okN = kn<=15, okL = stLen<=250;
+    var scol = (okN&&okL)?'#4ade80':'#fb7185';
+    var smsg = (okN&&okL)?'Compliant: '+kn+' keywords, '+stLen+'/250 chars':((okN?'':'Too many keywords ('+kn+'/15) ')+(okL?'':'Too long ('+stLen+'/250)'));
+    var inner2='<div style="margin-bottom:10px;padding:10px 14px;border:1px solid '+scol+';border-radius:9px;"><span style="color:'+scol+';font-weight:700;font-size:12px;">'+smsg+'</span><div style="font-size:9.5px;color:var(--dim);margin-top:4px;">TikTok limits: max 15 keywords, 250 characters total. Non-compliant words (medical claims, wrong product types, effect claims) get rejected by TikTok.</div></div>'+copyBox('Search Terms','c3',st);
+    mkTab('🔍 Search Terms','tt-st',false); mkSec('tt-st',inner2,false);
+  }
+
+  var rest=[{key:'DESCRIPTION',l:'Desc',c:'c2'},{key:'KEY SELLING POINTS',l:'Selling Points',c:'c4'},{key:'PRODUCT ATTRIBUTES',l:'Attributes',c:'c5'},{key:'HASHTAGS',l:'Hashtags',c:'c1'}];
+  rest.forEach(function(sd,i){
+    if(!S[sd.key]) return;
+    var sid='tt-r-'+i;
+    mkTab(sd.l,sid,false); mkSec(sid,copyBox(sd.l,sd.c,S[sd.key]),false);
+  });
+
+  // Static: Image Checklist (TikTok 2026 rules)
+  var chk='<div class="shopify-preview-box"><div class="ob-hdr"><span class="ob-lbl cS">TikTok Image Rules (2026)</span></div><div class="shopify-copy-area">'
+    +'MINIMUM 5 images (9 max) — 5 se kam par TikTok listing ko search mein dabata hai (quality tier)\n'
+    +'Size: 600x600 minimum, 800x800+ recommended (1600x1600 best)\n'
+    +'PEHLI image: saaf white/neutral background, koi text/logo/sticker/watermark NAHI, product frame ka 80%+ bhare\n'
+    +'Baaki images: lifestyle, size/scale, detail close-ups, variants\n'
+    +'Format: JPG ya PNG\n'
+    +'AI-generated image use ki to visible "AI-generated" label ZAROORI hai (2026 rule) — warna takedown risk\n'
+    +'Fashion ho to size chart lazmi (Platform Recommended Size Chart)</div></div>';
+  mkTab('🖼 Image Rules','tt-img',false); mkSec('tt-img',chk,false);
+
+  // Full listing copy
+  var parts=[];
+  ['CATEGORY','TITLE','SEARCH TERMS','DESCRIPTION','KEY SELLING POINTS','PRODUCT ATTRIBUTES','HASHTAGS'].forEach(function(k){if(S[k]){parts.push(k);parts.push('');parts.push(S[k]);parts.push('');parts.push('');}});
+  tiktokTxt=parts.join('\n');
+  mkTab('Full Listing','tt-all',false); mkSec('tt-all','<div class="shopify-banner"><strong>TikTok Shop Ready</strong> — Har section Copy karke Seller Center mein paste karein.</div>'+copyBox('Complete Listing','cS',tiktokTxt),false);
+}
+
+function renderShopifyOnly(shopifyText){
+  document.getElementById('outSplit').className='out-split shopify-only';
+  document.getElementById('lPane').classList.add('full-width');
+  document.getElementById('hPane').style.display='none';
+  document.getElementById('lPaneTitle').textContent='🛍 Shopify Listing — Copy Ready';
+  renderShopifyListing(shopifyText);
+}
+
+function parseShopifySections(text){
+  var KEYS=['SHOPIFY TITLE','DESCRIPTION','KEY FEATURES','SPECIFICATIONS','SHIPPING AND RETURNS','SEO METADATA','SHOPIFY TAGS','SOCIAL HASHTAGS'];
+  var out={},cur=null,buf=[];
+  text.split('\n').forEach(function(line){
+    var tr=line.trim().toUpperCase();
+    if(KEYS.indexOf(tr)>-1){if(cur)out[cur]=buf.join('\n').trim();cur=tr;buf=[];}
+    else if(cur)buf.push(line);
+  });
+  if(cur)out[cur]=buf.join('\n').trim();
+  return out;
+}
+
+function cleanShopifyText(t){
+  if(!t) return '';
+  return t.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1').replace(/^#+\s*/gm,'').replace(/^>\s*/gm,'').replace(/`([^`]*)`/g,'$1').replace(/^\s*[-]{2,}\s*$/gm,'').replace(/^(\s*)[-–—]\s+/gm,'$1').replace(/\s*[—–]\s*/g,' ').trim();
+}
+
+function renderShopifyListing(shopifyText){
+  var tabsEl=document.getElementById('stabs'), cntEl=document.getElementById('secCnt');
+  tabsEl.innerHTML=''; cntEl.innerHTML='';
+  var S=parseShopifySections(shopifyText);
+  Object.keys(S).forEach(function(k){S[k]=cleanShopifyText(S[k]);});
+  var fullClean=buildShopifyPlainText(S);
+  shopifyTxt=fullClean;
+
+  var allTab=document.createElement('button');
+  allTab.className='stab shopify-tab on';
+  allTab.textContent='Full Listing';
+  tabsEl.appendChild(allTab);
+
+  var allDiv=document.createElement('div');
+  allDiv.className='ssec on'; allDiv.id='shopify-all-sec';
+  allDiv.innerHTML='<div class="shopify-banner"><strong>Shopify Ready</strong> — Seedha paste karein. Plain text, koi formatting nahi.</div>'
+    +'<div class="shopify-preview-box"><div class="ob-hdr"><span class="ob-lbl cS">Complete Listing</span><button class="ib green" onclick="cpTxt(shopifyTxt,this)">Copy All</button></div>'
+    +'<div class="shopify-copy-area">'+escHtml(fullClean)+'</div></div>';
+  cntEl.appendChild(allDiv);
+
+  allTab.onclick=function(){document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.ssec').forEach(function(s){s.classList.remove('on');});allTab.classList.add('on');allDiv.classList.add('on');};
+
+  var defs=[{key:'SHOPIFY TITLE',l:'Title',c:'cS'},{key:'DESCRIPTION',l:'Desc',c:'c2'},{key:'KEY FEATURES',l:'Features',c:'c3'},{key:'SPECIFICATIONS',l:'Specs',c:'c4'},{key:'SHIPPING AND RETURNS',l:'Shipping',c:'c5'},{key:'SEO METADATA',l:'SEO',c:'cS'},{key:'SHOPIFY TAGS',l:'Tags',c:'c1'},{key:'SOCIAL HASHTAGS',l:'Social',c:'c2'}];
+  defs.forEach(function(sd,i){
+    var content=S[sd.key]; if(!content) return;
+    var tb=document.createElement('button'); tb.className='stab shopify-tab'; tb.textContent=sd.l;
+    var sid='ss-shopify-'+i;
+    tb.onclick=(function(b,id){return function(){document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.ssec').forEach(function(s){s.classList.remove('on');});b.classList.add('on');document.getElementById(id).classList.add('on');};})(tb,sid);
+    tabsEl.appendChild(tb);
+    var safe=content.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+    var div=document.createElement('div'); div.className='ssec'; div.id=sid;
+    div.innerHTML='<div class="shopify-preview-box"><div class="ob-hdr"><span class="ob-lbl '+sd.c+'">'+sd.l+'</span><button class="ib green" onclick="cpTxt(`'+safe+'`,this)">Copy</button></div><div class="shopify-copy-area">'+escHtml(content)+'</div></div>';
+    cntEl.appendChild(div);
+  });
+}
+
+function buildShopifyPlainText(S){
+  var parts=[];
+  ['SHOPIFY TITLE','DESCRIPTION','KEY FEATURES','SPECIFICATIONS','SHIPPING AND RETURNS','SEO METADATA','SHOPIFY TAGS','SOCIAL HASHTAGS'].forEach(function(k){if(S[k]){parts.push(k);parts.push('');parts.push(S[k]);parts.push('');parts.push('');}});
+  return parts.join('\n');
+}
+
+function parseListingSections(text){
+  var KEYS=['BRAND CHECK','TITLE','HTML HEADING','DESCRIPTION','KEY FEATURES','SPECIFICATIONS','COMPATIBLE MODELS','SAFETY INFORMATION','ITEM SPECIFICS','PRO TIPS','IDEAL FOR','POLICIES','SEO METADATA','TAGS'];
+  var out={},cur=null,buf=[];
+  text.split('\n').forEach(function(line){
+    var cl=line.replace(/^#+\s*/,'').replace(/\*\*/g,'').replace(/===\s*/g,'').replace(/\s*===/g,'').trim().toUpperCase();
+    if(KEYS.indexOf(cl)>-1){if(cur)out[cur]=buf.join('\n').trim();cur=cl;buf=[];}
+    else if(cur)buf.push(line);
+  });
+  if(cur)out[cur]=buf.join('\n').trim();
+  return out;
+}
+
+function parseSpecs(raw){
+  var lines=raw.split('\n'),result=[];
+  lines.forEach(function(line){
+    var l=line.trim(); if(!l||l.length<3) return;
+    if(/^[\|\s\-:]+$/.test(l)) return;
+    if(l.charAt(0)==='|'){
+      var cells=l.split('|').map(function(c){return c.trim();}).filter(function(c){return c.length>0;});
+      if(cells.length>=2){var label=cells[0].replace(/\*\*/g,''),val=cells[1].replace(/\*\*/g,'');if(label&&val&&val!=='-'&&val!=='—'&&!/spec|label/i.test(label))result.push({label:label,value:val});}
+      return;
+    }
+    if(l.indexOf(':')>-1){var idx=l.indexOf(':'),label2=l.slice(0,idx).replace(/^[-•*]\s*/,'').replace(/\*\*/g,'').trim(),val2=l.slice(idx+1).trim();if(label2&&val2&&label2.length<40)result.push({label:label2,value:val2});}
+  });
+  return result;
+}
+
+function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function buildCustomTheme(hex, mode){
+  // Parse hex to RGB
+  hex = hex.replace('#','');
+  if(hex.length===3) hex = hex.split('').map(function(c){return c+c;}).join('');
+  var r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16);
+  var rgb = r+','+g+','+b;
+
+  if(mode==='light'){
+    return {
+      bg:'#F7F8FC',
+      card:'#FFFFFF',
+      bc:'rgba('+rgb+',0.3)',
+      acc:hex,
+      txt:'#2a2a33',
+      h1:'#1a1a22,'+hex,
+      badge:'rgba('+rgb+',0.1)',
+      badgeTxt:hex,
+      rb:'rgba('+rgb+',0.15)'
+    };
+  }
+  // dark mode (default) — solid dark surfaces tinted with the chosen color
+  var dr=Math.round(r*0.10)+8, dg=Math.round(g*0.10)+8, db=Math.round(b*0.10)+10;
+  var cr=Math.round(r*0.16)+16, cg=Math.round(g*0.16)+16, cb=Math.round(b*0.16)+20;
+  function toHex2(n){n=Math.max(0,Math.min(255,n));var h=n.toString(16);return h.length<2?'0'+h:h;}
+  var bgSolid='#'+toHex2(dr)+toHex2(dg)+toHex2(db);
+  var cardSolid='#'+toHex2(cr)+toHex2(cg)+toHex2(cb);
+  return {
+    bg:bgSolid,
+    card:cardSolid,
+    bc:'rgba('+rgb+',0.45)',
+    acc:hex,
+    txt:'#e6e6ee',
+    h1:'#FFFFFF,'+hex,
+    badge:'rgba('+rgb+',0.2)',
+    badgeTxt:hex,
+    rb:'rgba('+rgb+',0.2)'
+  };
+}
+
+function buildHtmlFromListing(listingText,storeName,themeName){
+  var S=parseListingSections(listingText);
+  var TH={
+    heritage:{bg:'#0A0F1A',card:'#121926',bc:'rgba(220,90,30,0.25)',acc:'#DC5A1E',txt:'#C9D1DF',h1:'#FFFFFF,#DCBC9A',badge:'rgba(220,90,30,0.15)',badgeTxt:'#DC5A1E',rb:'rgba(220,90,30,0.18)'},
+    modern:{bg:'#0A0A14',card:'#101020',bc:'rgba(139,124,248,0.3)',acc:'#8b7cf8',txt:'#C9CDE8',h1:'#FFFFFF,#C4BCFA',badge:'rgba(139,124,248,0.15)',badgeTxt:'#A89BFA',rb:'rgba(139,124,248,0.2)'},
+    clean:{bg:'#F0F4FF',card:'#FFFFFF',bc:'rgba(29,78,219,0.2)',acc:'#1d4ed8',txt:'#374151',h1:'#111827,#1d4ed8',badge:'rgba(29,78,219,0.1)',badgeTxt:'#1d4ed8',rb:'rgba(29,78,219,0.15)'},
+    luxury:{bg:'#06060A',card:'#0E0E10',bc:'rgba(212,175,55,0.3)',acc:'#d4af37',txt:'#C8C4A8',h1:'#FFFFFF,#D4AF37',badge:'rgba(212,175,55,0.15)',badgeTxt:'#D4AF37',rb:'rgba(212,175,55,0.2)'},
+    // Noir — Apple-style minimal luxury: pure black, high-contrast white, silver accent
+    noir:{bg:'#000000',card:'#0C0C0C',bc:'rgba(255,255,255,0.14)',acc:'#E8E8E8',txt:'#B8B8B8',h1:'#FFFFFF,#9A9A9A',badge:'rgba(255,255,255,0.08)',badgeTxt:'#F0F0F0',rb:'rgba(255,255,255,0.1)'},
+    // Emerald — deep jewel green + mint: premium organic / jewellery feel
+    emerald:{bg:'#03150F',card:'#07231A',bc:'rgba(16,185,129,0.3)',acc:'#10b981',txt:'#B8D4C9',h1:'#FFFFFF,#6EE7B7',badge:'rgba(16,185,129,0.14)',badgeTxt:'#34d399',rb:'rgba(16,185,129,0.18)'},
+    // Ocean — deep navy + electric cyan: premium tech / gadgets feel
+    ocean:{bg:'#030B1A',card:'#081428',bc:'rgba(6,182,212,0.3)',acc:'#06b6d4',txt:'#B4C6DE',h1:'#FFFFFF,#67E8F9',badge:'rgba(6,182,212,0.14)',badgeTxt:'#22d3ee',rb:'rgba(6,182,212,0.18)'},
+    // Rosé — soft blush light theme + deep rose: beauty / fashion boutique feel
+    rose:{bg:'#FDF4F7',card:'#FFFFFF',bc:'rgba(224,68,124,0.25)',acc:'#e0447c',txt:'#5B4049',h1:'#3D1F2B,#E0447C',badge:'rgba(224,68,124,0.1)',badgeTxt:'#e0447c',rb:'rgba(224,68,124,0.16)'},
+  };
+  var T=TH[themeName]||TH.heritage;
+
+  // Custom theme: build a full palette from one picked color + dark/light mode
+  if(themeName==='custom'){
+    T=buildCustomTheme(customColor, customMode);
+  }
+
+  // Extract title
+  var titleBlock=(S['TITLE']||'').replace(/```+/g,'').trim();
+  var ebayTitle='Premium Product';
+  var tlines=titleBlock.split('\n');
+  for(var i=0;i<tlines.length;i++){
+    var tl=tlines[i].trim();
+    if(/eBay\s+Title/i.test(tl)){
+      var inM=tl.match(/(?:eBay\s+Title)[^:]*:\s*(.+)/i);
+      if(inM&&inM[1].trim().length>5&&!/chars|keyword|stacking|\[/i.test(inM[1])){ebayTitle=inM[1].replace(/`/g,'').trim();break;}
+      for(var j=i+1;j<tlines.length;j++){var nl=tlines[j].replace(/`/g,'').trim();if(nl.length>10&&!/chars|stacking|keyword|\[/i.test(nl)){ebayTitle=nl;break;}}
+      break;
+    }
+  }
+  if(ebayTitle==='Premium Product'){
+    for(var i2=0;i2<tlines.length;i2++){var c=tlines[i2].replace(/`/g,'').replace(/^[-•*\s]+/,'').trim();if(c.length>15&&!/chars|keyword|stacking|\[/i.test(c)){ebayTitle=c;break;}}
+  }
+
+  // Smart trim: keep eBay title <= 78 chars, never cut a word in the middle
+  ebayTitle = slfPadTitle(slfSmartTrim(slfStripBrand(ebayTitle), 80));
+
+  // Clean HTML heading = the eBay title in proper Title Case (first letter of each word capital)
+  // No keyword cramming — extra keywords are already placed & highlighted inside the description
+  function toTitleCase(str){
+    var smallWords = ['a','an','and','the','for','of','to','in','on','with','or','at','by'];
+    return str.split(' ').map(function(word, i){
+      if(!word) return word;
+      var lw = word.toLowerCase();
+      // Keep all-caps words like OEM, PTFE, UV intact
+      if(word.length <= 4 && word === word.toUpperCase() && /[A-Z]/.test(word)) return word;
+      // Keep words that start with a number (like 50Pcs) intact
+      if(/^\d/.test(word)) return word;
+      // Small words stay lowercase unless first word
+      if(i > 0 && smallWords.indexOf(lw) > -1) return lw;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
+  }
+  var headingText = toTitleCase(ebayTitle);
+  // If Claude generated a dedicated HTML HEADING (keyword-rich, natural), use it
+  var rawHeading = (S['HTML HEADING']||'').replace(/```+/g,'').replace(/^\[|\]$/g,'').trim();
+  rawHeading = rawHeading.split('\n')[0].replace(/`/g,'').replace(/,\s*$/,'').trim(); // first line, no trailing comma
+  if(rawHeading.length > 20 && !/heading here|\[/i.test(rawHeading)){
+    headingText = toTitleCase(rawHeading);
+  }
+
+  var descParas=(S['DESCRIPTION']||'').split(/\n\n+/).filter(function(p){return p.trim().length>20;}).slice(0,2);
+  var featLines=(S['KEY FEATURES']||'').split('\n').filter(function(l){return l.trim().length>5;}).slice(0,8);
+  var specParsed=parseSpecs(S['SPECIFICATIONS']||'');
+  var polLines=(S['POLICIES']||'').split('\n').filter(function(l){return l.trim().length>5;}).slice(0,4);
+  var tagLines=(S['IDEAL FOR']||'').split('\n').map(function(l){return l.replace(/^\s*[-–—•◆▸]\s*/,'').trim();}).filter(function(l){return l.length>2;}).slice(0,12);
+
+  // Tips
+  var tipsRaw=S['PRO TIPS']||'';
+  var tipBlocks=[],curB=[];
+  tipsRaw.split('\n').forEach(function(line){var l=line.trim();if(!l)return;var isNew=/^\d+[\.\)]\s+/.test(l)&&curB.length>0;if(isNew){tipBlocks.push(curB.join(' '));curB=[l];}else{curB.push(l);}});
+  if(curB.length>0)tipBlocks.push(curB.join(' '));
+  var parsedTips=tipBlocks.slice(0,5).map(function(raw){
+    var c=raw.replace(/^\d+[\.\)]\s*/,'').replace(/\*\*/g,'').trim();
+    var sepIdx=c.search(/\s[—–:]\s/);
+    var title,body;
+    if(sepIdx>-1){title=c.slice(0,sepIdx).trim();body=c.slice(sepIdx).replace(/^\s*[—–:]\s*/,'').trim();}
+    else{var di=c.indexOf('. ');if(di>10){title=c.slice(0,di+1);body=c.slice(di+1).trim();}else{title=c;body='';}}
+    return{title:title,body:body};
+  });
+
+  function fd(p){return p.trim().replace(/\*\*(.*?)\*\*/g,'<strong style="color:'+T.acc+'">$1</strong>');}
+
+  var css='*{margin:0;padding:0;box-sizing:border-box;}'
+  +'body{font-family:Inter,-apple-system,sans-serif;background:'+T.bg+';color:'+T.txt+';line-height:1.5;}'
+  +'.wrap{max-width:1280px;margin:0 auto;padding:2rem 1.5rem;}'
+  +'.section{margin-bottom:2rem;background:'+T.card+';border-radius:28px;padding:1.8rem 2rem;border:1px solid '+T.bc+';box-shadow:0 20px 35px -10px rgba(0,0,0,0.5);}'
+  +'.sec-title{font-size:1.6rem;font-weight:700;margin-bottom:1.2rem;display:inline-block;background:linear-gradient(135deg,'+T.h1+');-webkit-background-clip:text;background-clip:text;color:transparent;border-left:4px solid '+T.acc+';padding-left:1rem;}'
+  +'.desc-text{font-size:1rem;line-height:1.65;color:'+T.txt+';margin-bottom:1rem;}'
+  +'.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.9rem;margin-top:0.5rem;}'
+  +'.feat-item{display:flex;align-items:flex-start;gap:12px;background:'+T.bg+';padding:0.9rem 1.2rem;border-radius:20px;border:1px solid '+T.rb+';}'
+  +'.specs-wrap{background:'+T.bg+';border-radius:24px;border:1px solid '+T.rb+';overflow:hidden;}'
+  +'.spec-row{display:flex;flex-wrap:wrap;padding:1rem 1.4rem;border-bottom:1px solid '+T.rb+';}'
+  +'.spec-row:last-child{border-bottom:none;}'
+  +'.spec-l{width:34%;font-weight:700;color:'+T.acc+';font-size:0.88rem;}'
+  +'.spec-v{width:66%;color:'+T.txt+';font-size:0.88rem;}'
+  +'.tip-card{background:'+T.bg+';border-radius:20px;padding:1.1rem 1.5rem;margin-bottom:1rem;border-left:4px solid '+T.acc+';display:flex;gap:14px;}'
+  +'.tip-num{font-weight:800;font-size:1.2rem;color:'+T.acc+';min-width:36px;}'
+  +'.tip-body{font-size:0.9rem;color:'+T.txt+';line-height:1.65;}'
+  +'.tip-body strong{color:'+T.acc+';}'
+  +'.tag-cloud{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:0.8rem;}'
+  +'.tag{background:'+T.bg+';padding:0.35rem 1rem;border-radius:30px;font-size:0.7rem;font-weight:500;color:'+T.txt+';border:1px solid '+T.rb+';display:inline-flex;align-items:center;gap:0.4rem;}'
+  +'.tag-dot{color:'+T.acc+';font-size:0.6rem;}'
+  +'.policy-row{display:flex;flex-wrap:wrap;gap:1rem;background:'+T.bg+';border-radius:28px;padding:1rem 1.8rem;border:1px solid '+T.rb+';margin-top:0.5rem;}'
+  +'.policy-item{display:flex;align-items:center;gap:8px;font-weight:500;font-size:0.85rem;color:'+T.txt+';}'
+  +'@media(max-width:780px){.feat-grid{grid-template-columns:1fr;}.spec-l,.spec-v{width:100%;}.spec-row{flex-direction:column;}.wrap{padding:1rem;}.section{padding:1.2rem;}}';
+
+  var headColor = T.acc;
+  if(T.h1){ var hp=T.h1.split(','); headColor = (hp[0].trim().toUpperCase()==='#FFFFFF' && (typeof customMode==='undefined' || customMode!=='light')) ? (hp[1]?hp[1].trim():T.acc) : hp[0].trim(); }
+  var heroH='<div class="section" style="background:linear-gradient(125deg,'+T.card+' 0%,'+T.bg+' 100%);border:1px solid '+T.bc+';">'
+  +'<h1 style="font-size:2.4rem;font-weight:800;line-height:1.25;color:'+headColor+';">'+escHtml(headingText)+'</h1>'
+  +'</div>';
+
+  // ── Product images: hero + gallery (URL-based, eBay-safe) ──
+  var imgs = (typeof getProductImages==='function') ? getProductImages() : [];
+  var imgH='';
+  if(imgs.length>0){
+    imgH='<div class="section" style="text-align:center;">'
+      +'<img src="'+imgs[0]+'" alt="'+escHtml(headingText)+'" style="width:100%;max-width:520px;height:auto;border-radius:14px;border:1px solid '+T.bc+';box-shadow:0 10px 40px rgba(0,0,0,0.25);display:block;margin:0 auto;" onerror="this.style.display=\'none\'"/>';
+    if(imgs.length>1){
+      imgH+='<div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">';
+      for(var gi=1; gi<imgs.length; gi++){
+        imgH+='<img src="'+imgs[gi]+'" alt="Product view '+(gi+1)+'" style="width:31%;max-width:160px;min-width:110px;height:auto;border-radius:10px;border:1px solid '+T.rb+';" onerror="this.style.display=\'none\'"/>';
+      }
+      imgH+='</div>';
+    }
+    imgH+='</div>';
+  }
+
+  var descH=descParas.length>0?'<div class="section"><div class="sec-title">⟡ DESCRIPTION</div>'+descParas.map(function(p){return '<p class="desc-text">'+fd(p)+'</p>';}).join('')+'</div>':'';
+
+  var featH='';
+  if(featLines.length>0){
+    var fg='<div class="feat-grid">';
+    featLines.forEach(function(f){var c=f.replace(/^✅\s*/,'').replace(/^[-•]\s*/,''),parts=c.split(/\s*—\s*/),b=parts[0]||c,d=parts[1]||'';fg+='<div class="feat-item"><span style="font-size:1.1rem;color:'+T.acc+';flex-shrink:0;">'+(f.indexOf('✅')>-1?'✅':'🔹')+'</span><span style="font-size:0.92rem;color:'+T.txt+';"><strong style="color:'+T.acc+';">'+escHtml(b)+'</strong>'+(d?' — <span style="opacity:0.8;">'+escHtml(d)+'</span>':'')+'</span></div>';});
+    fg+='</div>';
+    featH='<div class="section"><div class="sec-title">⟡ KEY FEATURES</div>'+fg+'</div>';
+  }
+
+  var specsH='';
+  if(specParsed.length>0){var sr='<div class="specs-wrap">'+specParsed.map(function(s){return '<div class="spec-row"><div class="spec-l">'+escHtml(s.label)+'</div><div class="spec-v">'+escHtml(s.value)+'</div></div>';}).join('')+'</div>';specsH='<div class="section"><div class="sec-title">⟡ SPECIFICATIONS</div>'+sr+'</div>';}
+
+  var tipsH='';
+  if(parsedTips.length>0){tipsH='<div class="section"><div class="sec-title">⟡ PRO TIPS</div>'+parsedTips.map(function(t,i){return '<div class="tip-card"><div class="tip-num">0'+(i+1)+'</div><div class="tip-body"><strong>'+escHtml(t.title)+'</strong>'+(t.body?' — '+escHtml(t.body):'')+'</div></div>';}).join('')+'</div>';}
+
+  var idealH=tagLines.length>0?'<div class="section"><div class="sec-title">⟡ IDEAL FOR</div><div class="tag-cloud">'+tagLines.map(function(t){return '<span class="tag"><span class="tag-dot">◆</span>'+escHtml(t)+'</span>';}).join('')+'</div></div>':'';
+
+  // Compatible Models — full list in a 2-column grid (conditional)
+  var compatH='';
+  var compatLines=(S['COMPATIBLE MODELS']||'').split('\n').map(function(l){return l.replace(/^\s*[-–—•◆▸]\s*/,'').trim();}).filter(function(l){return l.length>1;});
+  if(compatLines.length>0){
+    compatH='<div class="section"><div class="sec-title">⟡ COMPATIBLE MODELS</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.45rem 1.2rem;">'
+      +compatLines.map(function(l){return '<div style="font-size:0.82rem;color:'+T.txt+';padding:0.3rem 0;border-bottom:1px solid '+T.rb+';"><span style="color:'+T.acc+';margin-right:0.5rem;">✓</span>'+escHtml(l)+'</div>';}).join('')
+      +'</div></div>';
+  }
+
+  // Safety Information — highlighted caution box (conditional)
+  var safetyH='';
+  var safetyLines=(S['SAFETY INFORMATION']||'').split('\n').map(function(l){return l.replace(/^\s*[-–—•◆▸]\s*/,'').trim();}).filter(function(l){return l.length>1;});
+  if(safetyLines.length>0){
+    safetyH='<div class="section" style="border:1px solid rgba(245,158,11,0.45);background:'+T.card+';">'
+      +'<div class="sec-title" style="color:#f59e0b;-webkit-text-fill-color:#f59e0b;">⚠ SAFETY INFORMATION</div>'
+      +safetyLines.map(function(l){return '<div style="font-size:0.84rem;color:'+T.txt+';padding:0.35rem 0;line-height:1.6;"><span style="color:#f59e0b;margin-right:0.5rem;">⚠</span>'+escHtml(l)+'</div>';}).join('')
+      +'</div>';
+  }
+
+  var polH='';
+  if(polLines.length>0){polH='<div class="section"><div class="sec-title">⟡ SHIPPING &amp; RETURNS</div><div class="policy-row">'+polLines.map(function(p){return '<span class="policy-item">'+escHtml(p)+'</span>';}).join('')+'</div></div>';}
+
+  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1.0">\n<title>'+escHtml(ebayTitle)+'</title>\n<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">\n<style>'+css+'</style>\n</head>\n<body>\n<div class="wrap">\n'+heroH+imgH+descH+featH+specsH+compatH+tipsH+idealH+safetyH+polH+'<div style="text-align:center;padding:1.5rem 0;font-size:0.7rem;color:'+T.acc+';opacity:0.6;border-top:1px solid '+T.rb+';">Premium Quality Products &nbsp;|&nbsp; Fast and Free Shipping &nbsp;|&nbsp; Trusted Seller</div>\n</div>\n</body>\n</html>';
+}
+
+function computeQualityScore(text){
+  var S={};
+  var KEYS=['BRAND CHECK','TITLE','HTML HEADING','DESCRIPTION','KEY FEATURES','SPECIFICATIONS','COMPATIBLE MODELS','SAFETY INFORMATION','ITEM SPECIFICS','PRO TIPS','IDEAL FOR','POLICIES','SEO METADATA','TAGS'];
+  var cur=null,buf=[];
+  text.split('\n').forEach(function(line){
+    var cl=line.replace(/^#+\s*/,'').replace(/\*\*/g,'').replace(/===\s*/g,'').replace(/\s*===/g,'').trim().toUpperCase();
+    if(KEYS.indexOf(cl)>-1){if(cur)S[cur]=buf.join('\n').trim();cur=cl;buf=[];}
+    else if(cur)buf.push(line);
+  });
+  if(cur)S[cur]=buf.join('\n').trim();
+
+  var checks=[];
+  var score=0;
+
+  // 1. Title length (20 pts) — extract eBay title
+  var titleBlock=(S['TITLE']||'');
+  var titleLine='';
+  titleBlock.split('\n').forEach(function(l){var c=l.replace(/`/g,'').replace(/^[-•*\s]+/,'').trim();if(!titleLine && c.length>20 && !/chars|keyword|stacking|character|\[/i.test(c))titleLine=c;});
+  var tlen=titleLine.length;
+  if(tlen>=75 && tlen<=80){score+=20;checks.push({label:'Title length ('+tlen+'/80)',pass:true,note:'Perfect — uses eBay space well'});}
+  else if(tlen>=70 && tlen<75){score+=14;checks.push({label:'Title length ('+tlen+'/80)',pass:'warn',note:'A bit short — add keywords'});}
+  else if(tlen>80){score+=10;checks.push({label:'Title length ('+tlen+'/80)',pass:'warn',note:'Too long — will be cut'});}
+  else {score+=6;checks.push({label:'Title length ('+tlen+'/80)',pass:false,note:'Too short — wasting space'});}
+
+  // 2. Keywords placed in description (20 pts)
+  var desc=(S['DESCRIPTION']||'').toLowerCase();
+  var kwInDesc=0;
+  if(typeof allKws!=='undefined' && allKws.length>0){
+    allKws.forEach(function(k){if(desc.indexOf(k.toLowerCase())>-1)kwInDesc++;});
+  }
+  if(kwInDesc>=8){score+=20;checks.push({label:kwInDesc+' keywords in description',pass:true,note:'Strong keyword coverage'});}
+  else if(kwInDesc>=4){score+=14;checks.push({label:kwInDesc+' keywords in description',pass:'warn',note:'Decent — could add a few more'});}
+  else {score+=6;checks.push({label:kwInDesc+' keywords in description',pass:false,note:'Low — add more keywords naturally'});}
+
+  // 3. Item Specifics present (20 pts) — big SEO weight
+  var spec=(S['ITEM SPECIFICS']||'');
+  var specCount=spec.split('\n').filter(function(l){return l.indexOf(':')>-1 && l.trim().length>3;}).length;
+  if(specCount>=6){score+=20;checks.push({label:specCount+' eBay item specifics',pass:true,note:'Great — boosts Cassini ranking & filters'});}
+  else if(specCount>=3){score+=13;checks.push({label:specCount+' eBay item specifics',pass:'warn',note:'Add more for better filter coverage'});}
+  else {score+=4;checks.push({label:specCount+' eBay item specifics',pass:false,note:'Few — you may miss filter searches'});}
+
+  // 4. Description length (15 pts)
+  var descLen=(S['DESCRIPTION']||'').length;
+  if(descLen>=400){score+=15;checks.push({label:'Description length',pass:true,note:'Detailed & informative'});}
+  else if(descLen>=200){score+=10;checks.push({label:'Description length',pass:'warn',note:'OK — could be richer'});}
+  else {score+=4;checks.push({label:'Description length',pass:false,note:'Too thin'});}
+
+  // 5. Key features count (15 pts)
+  var feats=(S['KEY FEATURES']||'').split('\n').filter(function(l){return l.trim().length>5;}).length;
+  if(feats>=6){score+=15;checks.push({label:feats+' key features',pass:true,note:'Good coverage'});}
+  else if(feats>=3){score+=10;checks.push({label:feats+' key features',pass:'warn',note:'Add a few more'});}
+  else {score+=4;checks.push({label:feats+' key features',pass:false,note:'Too few'});}
+
+  // 6. Tags/keywords section (10 pts)
+  var hasTags=(S['TAGS']||'').length>20;
+  if(hasTags){score+=10;checks.push({label:'Backend tags present',pass:true,note:'Extra discoverability'});}
+  else {score+=3;checks.push({label:'Backend tags',pass:false,note:'Missing'});}
+
+  return {score:Math.min(score,100), checks:checks};
+}
+
+function renderQualityScore(text){
+  var result=computeQualityScore(text);
+  var score=result.score;
+  var color = score>=80?'#4ade80':(score>=60?'#fbbf24':'#fb7185');
+  var grade = score>=80?'Excellent':(score>=60?'Good':'Needs work');
+  var rgb = score>=80?'74,222,128':(score>=60?'251,191,36':'251,113,133');
+
+  var tabsEl=document.getElementById('stabs');
+  var cntEl=document.getElementById('secCnt');
+  var ot=document.getElementById('qs-tab-btn'),os=document.getElementById('qs-tab-sec');
+  if(ot)ot.remove(); if(os)os.remove();
+
+  var tb=document.createElement('button');
+  tb.className='stab'; tb.id='qs-tab-btn'; tb.innerHTML='📊 Quality '+score;
+  tb.style.borderColor=color; tb.style.color=color;
+  tb.onclick=function(){document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.ssec').forEach(function(s){s.classList.remove('on');});tb.classList.add('on');document.getElementById('qs-tab-sec').classList.add('on');};
+  tabsEl.insertBefore(tb, tabsEl.firstChild);
+
+  var html='<div class="ssec" id="qs-tab-sec">';
+  // Score circle
+  html+='<div style="display:flex;align-items:center;gap:18px;margin-bottom:16px;padding:16px;background:rgba('+rgb+',0.08);border:1px solid '+color+';border-radius:14px;">'
+    +'<div style="width:72px;height:72px;border-radius:50%;border:4px solid '+color+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+    +'<span id="qs-score-num" style="font-size:24px;font-weight:700;color:'+color+';font-family:\'Geist Mono\',monospace;">0</span></div>'
+    +'<div><div style="font-size:15px;font-weight:600;color:'+color+';">'+grade+'</div>'
+    +'<div style="font-size:11px;color:var(--dim);margin-top:3px;">Listing SEO Quality Score (out of 100)</div></div>'
+    +'</div>';
+  // Checks
+  result.checks.forEach(function(c,ci){
+    var ic = c.pass===true?'✓':(c.pass==='warn'?'!':'✕');
+    var icCol = c.pass===true?'#4ade80':(c.pass==='warn'?'#fbbf24':'#fb7185');
+    html+='<div class="slf-rise" style="animation-delay:'+(150+ci*45)+'ms;display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--wire);">'
+      +'<span style="width:18px;height:18px;border-radius:50%;background:rgba('+(c.pass===true?'74,222,128':c.pass==='warn'?'251,191,36':'251,113,133')+',0.15);color:'+icCol+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">'+ic+'</span>'
+      +'<div><div style="font-size:12px;color:var(--snow);font-weight:500;">'+c.label+'</div>'
+      +'<div style="font-size:10px;color:var(--dim);margin-top:1px;">'+c.note+'</div></div>'
+      +'</div>';
+  });
+  html+='<div style="margin-top:12px;padding:9px 13px;background:var(--ink3);border:1px solid var(--wire);border-radius:8px;font-size:10px;color:var(--dim);line-height:1.6;">'
+    +'This score checks the parts you control in the listing. Remember: pricing, photos, and seller rating also drive sales.</div>';
+  html+='</div>';
+  cntEl.insertAdjacentHTML('beforeend', html);
+  // Subtle count-up animation for the score number
+  (function(){
+    var el=document.getElementById('qs-score-num'); if(!el) return;
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=score;return;}
+    var start=null, dur=700;
+    function step(ts){
+      if(!start) start=ts;
+      var p=Math.min((ts-start)/dur,1);
+      var eased=1-Math.pow(1-p,3); // ease-out
+      el.textContent=Math.round(eased*score);
+      if(p<1) requestAnimationFrame(step); else el.textContent=score;
+    }
+    requestAnimationFrame(step);
+  })();
+}
+
+function renderVeroCheck(text){
+  var tabsEl=document.getElementById('stabs');
+  var cntEl=document.getElementById('secCnt');
+  var ot=document.getElementById('vero-tab-btn'),os=document.getElementById('vero-tab-sec');
+  if(ot)ot.remove(); if(os)os.remove();
+
+  // parse sections so we can say WHERE a term appears
+  var S={}, KEYS=['BRAND CHECK','TITLE','HTML HEADING','DESCRIPTION','KEY FEATURES','SPECIFICATIONS','COMPATIBLE MODELS','SAFETY INFORMATION','ITEM SPECIFICS','PRO TIPS','IDEAL FOR','POLICIES','SEO METADATA','TAGS'];
+  var cur=null,buf=[];
+  text.split('\n').forEach(function(line){
+    var cl=line.replace(/^#+\s*/,'').replace(/\*\*/g,'').replace(/===\s*/g,'').replace(/\s*===/g,'').trim().toUpperCase();
+    if(KEYS.indexOf(cl)>-1){if(cur)S[cur]=buf.join('\n').trim();cur=cl;buf=[];}
+    else if(cur)buf.push(line);
+  });
+  if(cur)S[cur]=buf.join('\n').trim();
+
+  // Only scan the parts that actually go live on eBay
+  var live = [S['TITLE']||'', S['HTML HEADING']||'', S['DESCRIPTION']||'', S['KEY FEATURES']||'', S['ITEM SPECIFICS']||'', S['TAGS']||''].join('\n');
+  var found = scanVero(live);
+
+  var highN=found.high.length, medN=found.med.length;
+  var phraseHigh=found.phrases.filter(function(p){return p.r==='high';});
+  var phraseMed=found.phrases.filter(function(p){return p.r==='med';});
+  var riskyHigh = highN + phraseHigh.length;
+  var riskyMed  = medN + phraseMed.length;
+
+  var status, color, rgb, icon;
+  if(riskyHigh>0){ status='HIGH RISK'; color='#fb7185'; rgb='251,113,133'; icon='⛔'; }
+  else if(riskyMed>0){ status='REVIEW NEEDED'; color='#fbbf24'; rgb='251,191,36'; icon='⚠'; }
+  else { status='LOOKS CLEAN'; color='#4ade80'; rgb='74,222,128'; icon='🛡'; }
+
+  var tb=document.createElement('button');
+  tb.className='stab'; tb.id='vero-tab-btn';
+  tb.innerHTML='🛡 VeRO'+(riskyHigh>0?' '+riskyHigh:(riskyMed>0?' '+riskyMed:' ✓'));
+  tb.style.borderColor=color; tb.style.color=color;
+  tb.onclick=function(){document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.ssec').forEach(function(s){s.classList.remove('on');});tb.classList.add('on');document.getElementById('vero-tab-sec').classList.add('on');};
+  tabsEl.insertBefore(tb, tabsEl.firstChild);
+
+  var html='<div class="ssec" id="vero-tab-sec">';
+  html+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;padding:14px 16px;background:rgba('+rgb+',0.08);border:1px solid '+color+';border-radius:12px;">'
+    +'<span style="font-size:26px;">'+icon+'</span>'
+    +'<div><div style="font-size:14px;font-weight:700;color:'+color+';">'+status+'</div>'
+    +'<div style="font-size:11px;color:var(--dim);margin-top:2px;">eBay VeRO / intellectual property scan of your live listing text</div></div></div>';
+
+  function riskRow(term, level, why, where){
+    var c = level==='high' ? '#fb7185' : '#fbbf24';
+    var bg = level==='high' ? '251,113,133' : '251,191,36';
+    var lbl = level==='high' ? 'HIGH' : 'REVIEW';
+    return '<div class="slf-rise" style="background:var(--ink3);border:1px solid rgba('+bg+',0.3);border-left:3px solid '+c+';border-radius:9px;padding:11px 13px;margin-bottom:7px;">'
+      +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;">'
+      +'<span style="font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba('+bg+',0.15);color:'+c+';border:1px solid rgba('+bg+',0.35);">'+lbl+'</span>'
+      +'<span style="font-size:12.5px;font-weight:600;color:var(--snow);font-family:\'Geist Mono\',monospace;">'+term+'</span>'
+      +(where&&where.length?'<span style="margin-left:auto;font-size:9px;color:var(--fog);">in '+where.join(', ')+'</span>':'')
+      +'</div>'
+      +'<div style="font-size:10.5px;color:var(--dim);line-height:1.5;">'+why+'</div></div>';
+  }
+
+  if(riskyHigh===0 && riskyMed===0){
+    html+='<div style="padding:16px;background:var(--ink3);border:1px solid var(--wire);border-radius:10px;font-size:12px;color:var(--fog);line-height:1.7;">'
+      +'No known high-risk brand names or counterfeit-signal phrases were found in your title, description, item specifics or tags.</div>';
+  } else {
+    found.high.forEach(function(b){
+      html+=riskRow(b,'high','Known for aggressive VeRO enforcement. Remove it unless your source data proves the item genuinely is this brand and you can document it.', veroLocations(b,S));
+    });
+    phraseHigh.forEach(function(p){
+      html+=riskRow(p.t,'high',p.why+'. Remove this wording.', veroLocations(p.t,S));
+    });
+    found.med.forEach(function(b){
+      html+=riskRow(b,'med','Brand name detected. Fine if the item genuinely is this brand and legitimately sourced — otherwise remove it.', veroLocations(b,S));
+    });
+    phraseMed.forEach(function(p){
+      html+=riskRow(p.t,'med',p.why+'.', veroLocations(p.t,S));
+    });
+  }
+
+  html+='<div style="margin-top:14px;padding:11px 13px;background:var(--ink3);border:1px solid var(--wire);border-radius:9px;font-size:10px;color:var(--dim);line-height:1.7;">'
+    +'<strong style="color:var(--fog);">Honest note:</strong> eBay does not publish a complete VeRO list — thousands of rights owners participate and enforcement changes over time. '
+    +'This scan checks the brands and phrases most known for enforcement, so it lowers your risk but cannot guarantee safety. '
+    +'A genuine, legitimately sourced branded item can be listed factually; the danger is implying a brand link you do not have.</div>';
+  html+='</div>';
+  cntEl.insertAdjacentHTML('beforeend', html);
+}
+
+function renderCompetitors(){
+  var tabsEl=document.getElementById('stabs');
+  var cntEl=document.getElementById('secCnt');
+  var ot=document.getElementById('comp-tab-btn'),os=document.getElementById('comp-tab-sec');
+  if(ot)ot.remove(); if(os)os.remove();
+
+  if(!lastCompetitors || lastCompetitors.length===0) return; // no data, skip
+
+  var tb=document.createElement('button');
+  tb.className='stab'; tb.id='comp-tab-btn'; tb.innerHTML='🏆 Competitors';
+  tb.style.borderColor='rgba(96,165,250,0.4)'; tb.style.color='#60a5fa';
+  tb.onclick=function(){document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.ssec').forEach(function(s){s.classList.remove('on');});tb.classList.add('on');document.getElementById('comp-tab-sec').classList.add('on');};
+  tabsEl.insertBefore(tb, tabsEl.firstChild);
+
+  var html='<div class="ssec" id="comp-tab-sec">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 14px;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.2);border-radius:10px;">'
+    +'<span style="font-size:8px;padding:2px 6px;border-radius:4px;background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3);font-weight:600;">REAL DATA</span>'
+    +'<span style="font-size:11px;color:#60a5fa;font-weight:600;">Top '+lastCompetitors.length+' live eBay listings for this product</span></div>';
+
+  // Price analysis
+  var prices=lastCompetitors.map(function(c){var m=(c.price||'').match(/[\d.]+/);return m?parseFloat(m[0]):null;}).filter(function(p){return p!==null;});
+  if(prices.length>0){
+    var min=Math.min.apply(null,prices), max=Math.max.apply(null,prices);
+    var avg=(prices.reduce(function(a,b){return a+b;},0)/prices.length).toFixed(2);
+    html+='<div style="display:flex;gap:8px;margin-bottom:14px;">'
+      +'<div style="flex:1;background:var(--ink3);border:1px solid var(--wire);border-radius:8px;padding:9px;text-align:center;"><div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;">Lowest</div><div style="font-size:14px;color:#4ade80;font-weight:600;font-family:\'Geist Mono\',monospace;">$'+min.toFixed(2)+'</div></div>'
+      +'<div style="flex:1;background:var(--ink3);border:1px solid var(--wire);border-radius:8px;padding:9px;text-align:center;"><div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;">Average</div><div style="font-size:14px;color:var(--gold);font-weight:600;font-family:\'Geist Mono\',monospace;">$'+avg+'</div></div>'
+      +'<div style="flex:1;background:var(--ink3);border:1px solid var(--wire);border-radius:8px;padding:9px;text-align:center;"><div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;">Highest</div><div style="font-size:14px;color:var(--rose);font-weight:600;font-family:\'Geist Mono\',monospace;">$'+max.toFixed(2)+'</div></div>'
+      +'</div>';
+  }
+
+  // Listings
+  lastCompetitors.forEach(function(c,i){
+    var safeTitle=(c.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    html+='<div class="slf-rise" style="animation-delay:'+Math.min(i*50,300)+'ms;background:var(--ink3);border:1px solid var(--wire);border-radius:10px;padding:12px 14px;margin-bottom:8px;">'
+      +'<div style="font-size:12px;color:var(--snow);line-height:1.5;margin-bottom:8px;">'+safeTitle+'</div>'
+      +'<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
+      +'<span style="font-size:13px;color:#4ade80;font-weight:600;font-family:\'Geist Mono\',monospace;">'+(c.price||'N/A')+'</span>'
+      +'<span style="font-size:10px;color:var(--dim);">'+(c.condition||'')+'</span>'
+      +'<span style="margin-left:auto;font-size:10px;color:var(--fog);">seller: '+(c.seller||'N/A')+'</span>'
+      +'</div></div>';
+  });
+
+  html+='<div style="margin-top:12px;padding:9px 13px;background:var(--ink3);border:1px solid var(--wire);border-radius:8px;font-size:10px;color:var(--dim);line-height:1.6;">'
+    +'These are live eBay listings ranking for your product. Study their titles & pricing to position yours competitively.</div>';
+  html+='</div>';
+  cntEl.insertAdjacentHTML('beforeend', html);
+}
+
+function renderKeywords(){
+  var sources=[{id:'ebay',label:'eBay',icon:'🏪',color:'#f0c060',bg:'rgba(240,192,96,0.07)',bdr:'rgba(240,192,96,0.2)'},{id:'amazon',label:'Amazon',icon:'📦',color:'#fb923c',bg:'rgba(251,146,60,0.07)',bdr:'rgba(251,146,60,0.2)'},{id:'walmart',label:'Walmart',icon:'🛒',color:'#60a5fa',bg:'rgba(96,165,250,0.07)',bdr:'rgba(96,165,250,0.2)'},{id:'google',label:'Google',icon:'🔍',color:'#4ade80',bg:'rgba(74,222,128,0.07)',bdr:'rgba(74,222,128,0.2)'}];
+  var tabsEl=document.getElementById('stabs'),cntEl=document.getElementById('secCnt');
+  var ot=document.getElementById('kw-tab-btn'),os=document.getElementById('kw-tab-sec');
+  if(ot)ot.remove(); if(os)os.remove();
+  var tb=document.createElement('button');
+  tb.className='stab'; tb.id='kw-tab-btn'; tb.innerHTML='🔑 Keywords';
+  tb.style.borderColor='rgba(212,168,71,0.4)'; tb.style.color='var(--gold)';
+  tb.onclick=function(){document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.ssec').forEach(function(s){s.classList.remove('on');});tb.classList.add('on');document.getElementById('kw-tab-sec').classList.add('on');};
+  tabsEl.insertBefore(tb, tabsEl.firstChild);
+  // TikTok source card (only in TikTok mode with data)
+  var ttk = (platform==='tiktok' && window.slfTikTokKws) ? window.slfTikTokKws : [];
+  if(ttk.length>0){ srcKws.tiktok = ttk; srcReal.tiktok = true; }
+  var totalRaw=srcKws.ebay.length+srcKws.amazon.length+srcKws.walmart.length+srcKws.google.length+ttk.length;
+  var html='<div class="ssec" id="kw-tab-sec">';
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:10px 14px;background:rgba(212,168,71,0.07);border:1px solid rgba(212,168,71,0.2);border-radius:10px;"><div style="font-size:11px;color:var(--gold);font-weight:600;">✦ '+totalRaw+' Keywords (4 x 10)</div><div style="font-size:10px;color:var(--dim);">'+allKws.length+' unique used</div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+  var srcList = ttk.length>0 ? [{id:'tiktok',label:'TikTok',icon:'📱',color:'#f472b6',bg:'rgba(244,114,182,0.07)',bdr:'rgba(244,114,182,0.25)'}].concat(sources) : sources;
+  srcList.forEach(function(src){
+    var kws=srcKws[src.id]||[];
+    var isReal=srcReal[src.id];
+    var srcBadge = kws.length>0
+      ? (isReal
+          ? '<span style="font-size:8px;padding:2px 6px;border-radius:4px;background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3);font-weight:600;">REAL DATA</span>'
+          : '<span style="font-size:8px;padding:2px 6px;border-radius:4px;background:rgba(168,139,250,0.15);color:#a78bfa;border:1px solid rgba(168,139,250,0.3);font-weight:600;">AI ASSIST</span>')
+      : '';
+    html+='<div style="background:'+src.bg+';border:1px solid '+src.bdr+';border-radius:10px;padding:13px;">';
+    html+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;"><span>'+src.icon+'</span><span style="font-size:11px;font-weight:600;color:'+src.color+';text-transform:uppercase;letter-spacing:0.1em;">'+src.label+'</span>'+srcBadge+'<span style="margin-left:auto;font-size:10px;color:var(--dim);">'+kws.length+' kws</span></div>';
+    if(kws.length>0)kws.forEach(function(kw,i){html+='<div style="display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:9px;color:var(--dim);width:14px;">'+(i+1)+'.</span><span style="font-size:11px;color:var(--snow);">'+kw+'</span></div>';});
+    else html+='<div style="font-size:11px;color:var(--dim);padding:8px 0;">No keywords</div>';
+    html+='</div>';
+  });
+  html+='</div>';
+  // Legend
+  html+='<div style="margin-top:12px;padding:9px 13px;background:var(--ink3);border:1px solid var(--wire);border-radius:8px;font-size:10px;color:var(--dim);line-height:1.6;">'
+    +'<span style="color:#4ade80;font-weight:600;">REAL DATA</span> = live autocomplete from the actual platform (Google/Amazon). '
+    +'<span style="color:#a78bfa;font-weight:600;">AI ASSIST</span> = intelligently generated when live data unavailable.'
+    +'</div></div>';
+  cntEl.insertAdjacentHTML('beforeend',html);
+}
+
+function highlightKeywords(text,keywords){
+  if(!keywords||keywords.length===0||allKws.length===0) return text;
+  keywords.slice().sort(function(a,b){return b.length-a.length;}).forEach(function(kw){
+    if(kw.length<4)return;
+    var re=new RegExp('(?![^<]*>)\\b('+kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')\\b','gi');
+    text=text.replace(re,'<strong style="color:var(--gold2);background:rgba(212,168,71,0.12);padding:0 3px;border-radius:3px;">$1</strong>');
+  });
+  return text;
+}
+
+function renderListing(text){
+  var KEYS=['BRAND CHECK','TITLE','HTML HEADING','DESCRIPTION','KEY FEATURES','SPECIFICATIONS','COMPATIBLE MODELS','SAFETY INFORMATION','ITEM SPECIFICS','PRO TIPS','IDEAL FOR','POLICIES','SEO METADATA','TAGS'];
+  var META={'BRAND CHECK':{l:'Brand',c:'c4'},'TITLE':{l:'Title',c:'c1'},'HTML HEADING':{l:'HTML Heading',c:'c1'},'DESCRIPTION':{l:'Desc',c:'c2'},'KEY FEATURES':{l:'Features',c:'c3'},'SPECIFICATIONS':{l:'Specs',c:'c4'},'COMPATIBLE MODELS':{l:'🔧 Compatible',c:'c3'},'SAFETY INFORMATION':{l:'⚠ Safety',c:'c5'},'ITEM SPECIFICS':{l:'⭐ Item Specifics',c:'c2'},'PRO TIPS':{l:'Tips',c:'c5'},'IDEAL FOR':{l:'Ideal For',c:'c2'},'POLICIES':{l:'Policies',c:'c3'},'SEO METADATA':{l:'SEO',c:'c5'},'TAGS':{l:'Tags',c:'c1'}};
+  var parsed=[],cur=null,buf=[];
+  text.split('\n').forEach(function(line){var cl=line.replace(/^#+\s*/,'').replace(/\*\*/g,'').replace(/===\s*/g,'').replace(/\s*===/g,'').trim().toUpperCase();if(KEYS.indexOf(cl)>-1){if(cur)parsed.push({key:cur,content:buf.join('\n').trim()});cur=cl;buf=[];}else if(cur)buf.push(line);});
+  if(cur)parsed.push({key:cur,content:buf.join('\n').trim()});
+  if(parsed.length===0)parsed.push({key:'LISTING',content:text});
+  var tabsEl=document.getElementById('stabs'),cntEl=document.getElementById('secCnt');
+  tabsEl.innerHTML=''; cntEl.innerHTML='';
+  parsed.forEach(function(sec,i){
+    if(!sec.content)return;
+    var m=META[sec.key]||{l:sec.key,c:'c2'};
+    var tb=document.createElement('button'); tb.className='stab'+(i===0?' on':''); tb.textContent=m.l;
+    tb.onclick=(function(idx,b){return function(){document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');});document.querySelectorAll('.ssec').forEach(function(s){s.classList.remove('on');});b.classList.add('on');document.getElementById('ss'+idx).classList.add('on');};})(i,tb);
+    tabsEl.appendChild(tb);
+    var div=document.createElement('div'); div.className='ssec'+(i===0?' on':''); div.id='ss'+i;
+    var esc2=sec.content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var fmt=esc2.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/✅/g,'<span style="color:var(--teal)">✅</span>');
+    if(sec.key==='DESCRIPTION'||sec.key==='KEY FEATURES')fmt=highlightKeywords(fmt,allKws);
+    // IDEAL FOR: replace leading dash with a nice bullet marker
+    if(sec.key==='IDEAL FOR'){
+      fmt=fmt.split('\n').map(function(line){
+        var t=line.replace(/^\s*[-–—•]\s*/,'').trim();
+        if(t.length<2) return '';
+        return '<div style="display:flex;align-items:flex-start;gap:9px;padding:3px 0;"><span style="color:var(--gold2);font-size:13px;line-height:1.5;flex-shrink:0;">◆</span><span>'+t+'</span></div>';
+      }).filter(Boolean).join('');
+    }
+    var safe=sec.content.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+
+    // For TITLE: extract the eBay title line, pad it to 75-80 chars, show counter + padded title
+    var counterHtml='';
+    if(sec.key==='TITLE'){
+      var titleLine='';
+      var tl=sec.content.split('\n');
+      for(var ti=0;ti<tl.length;ti++){var cand=tl[ti].replace(/`/g,'').replace(/^[-•*\s]+/,'').trim();if(cand.length>20&&!/chars|keyword|stacking|character|\[/i.test(cand)){titleLine=cand;break;}}
+      if(titleLine){
+        // Pad/trim to guarantee 75-80 chars using fetched keywords
+        var padded=slfPadTitle(slfSmartTrim(slfStripBrand(titleLine),80));
+        // Replace the original title line in the displayed content with the padded one
+        fmt=fmt.replace(titleLine, padded);
+        // Update the copy text too
+        safe=padded.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+        var len=padded.length;
+        var ok = len>=75 && len<=80;
+        var warn = len>=70 && len<75;
+        var col = ok?'#4ade80':(warn?'#fbbf24':'#fb7185');
+        var msg = ok?'Perfect length':(len<70?'Too short':(warn?'A bit short':'Too long'));
+        counterHtml='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:7px 11px;background:rgba('+(ok?'74,222,128':warn?'251,191,36':'251,113,133')+',0.1);border:1px solid '+col+';border-radius:7px;font-size:11px;">'
+          +'<span style="font-weight:700;color:'+col+';font-family:\'Geist Mono\',monospace;">'+len+'/80</span>'
+          +'<span style="color:'+col+';">'+msg+'</span>'
+          +'<span style="margin-left:auto;color:var(--dim);font-size:9px;">eBay limit: 80</span>'
+          +'</div>';
+      }
+    }
+
+    div.innerHTML='<div class="ob"><div class="ob-hdr"><span class="ob-lbl '+m.c+'">'+m.l+'</span><button class="ib" onclick="cpTxt(`'+safe+'`,this)">Copy</button></div><div class="ob-body">'+counterHtml+fmt+'</div></div>';
+    cntEl.appendChild(div);
+  });
+}
+
+function renderHtml(html){var blob=new Blob([html],{type:'text/html'});document.getElementById('htmlFrame').src=URL.createObjectURL(blob);document.getElementById('htmlSrc').textContent=html;}
+function showPreview(){document.getElementById('frameW').style.display='block';document.getElementById('srcW').style.display='none';document.getElementById('vtP').classList.add('on');document.getElementById('vtS').classList.remove('on');}
+function showSrc(){document.getElementById('frameW').style.display='none';document.getElementById('srcW').style.display='block';document.getElementById('vtS').classList.add('on');document.getElementById('vtP').classList.remove('on');}
+function cpTxt(t,btn){navigator.clipboard.writeText(t).then(function(){btn.textContent='✓ Copied';btn.classList.add('cp');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('cp');},2000);});}
+function copyAllTxt(){navigator.clipboard.writeText(platform==='shopify'?shopifyTxt:platform==='ebay'?fullTxt:seoTxt).then(function(){alert('Copied!');});}
+function copyHtml(){if(!genHtml){alert('No HTML.');return;}navigator.clipboard.writeText(genHtml).then(function(){var b=document.getElementById('cpHtmlBtn');b.textContent='✓ Copied!';b.classList.add('cp');setTimeout(function(){b.textContent='Copy HTML';b.classList.remove('cp');},2500);});}
+function dlHtml(){if(!genHtml)return;var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([genHtml],{type:'text/html'}));a.download='surti-listing.html';a.click();}
+function clearAll(){
+  document.getElementById('productInput').value='';
+  document.getElementById('compTitle').value='';
+  document.getElementById('brandName').value='';
+  document.getElementById('brandInTitle').checked=false;
+  document.getElementById('imgUrls').value='';
+  var _n=document.getElementById('imgUrlsNote'); if(_n)_n.textContent='';
+  document.getElementById('charCt').textContent='0 chars';
+  document.getElementById('kwFound').classList.remove('show');
+  document.getElementById('emptyState').style.display='flex';
+  document.getElementById('output').classList.remove('show');
+  ['ebay','amazon','walmart','google'].forEach(function(id){var r=document.getElementById('ks-'+id);r.classList.remove('kw-ok','kw-go','kw-no');r.querySelector('.kw-d').classList.remove('sp');document.getElementById('kc-'+id).textContent='—';});
+  setChip('idle','Ready'); fullTxt=''; genHtml=''; shopifyTxt=''; tiktokTxt=''; seoTxt=''; lastCompetitors=[];
+  document.getElementById('mainArea').scrollTo({top:0,behavior:'smooth'});
+}
+function setLoading(on){document.getElementById('genBtn').disabled=on;document.getElementById('spinner').style.display=on?'block':'none';document.getElementById('btnTxt').textContent=on?'Generating...':'Generate Listing';}
+function showErr(m){var e=document.getElementById('errBar');e.textContent=m;e.style.display='block';}
+function hideErr(){document.getElementById('errBar').style.display='none';}
+</script>
+</body>
+</html>
