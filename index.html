@@ -479,7 +479,7 @@ Free Shipping: No hidden fees.
 // ki jagah apni FREE Gemini key paste kar dein (AIza... wali) —
 // phir kisi ko kabhi key nahi daalni paregi, field khud chhup jayega.
 // ═══════════════════════════════════════════════════════════════
-var DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6J_Pz-c2iWTSNYsxOQtq9U-M_deJO8JxyTg6-Fo95URfA';
+var DEFAULT_GEMINI_KEY = 'PASTE-YOUR-GEMINI-KEY-HERE';
 
 var platform='ebay', theme='auto', fullTxt='', genHtml='', allKws=[], shopifyTxt='', tiktokTxt='', seoTxt='', market='us';
 var srcKws={ebay:[],amazon:[],walmart:[],google:[]};
@@ -491,7 +491,7 @@ window.onload=function(){
   var savedMarket=localStorage.getItem('slf_market')||'us'; setMarket(savedMarket);
   // Built-in key: file mein baked key ho to use karo aur key field chhupa do
   var _dk=(typeof DEFAULT_GEMINI_KEY!=='undefined'?String(DEFAULT_GEMINI_KEY):'').trim();
-  if(_dk.indexOf('AIza')===0){
+  if(_dk.length>=20 && _dk.indexOf('PASTE')===-1){
     var _ki=document.getElementById('apiKey');
     if(_ki){_ki.value=_dk;}
     localStorage.setItem('slf_gk',_dk);
@@ -518,7 +518,7 @@ window.onload=function(){
   updateRestoreBtn();
 };
 
-function onKey(){var k=document.getElementById('apiKey').value.trim();localStorage.setItem('slf_gk',k);document.getElementById('keyLed').classList.toggle('on',k.indexOf('AIza')===0);}
+function onKey(){var k=document.getElementById('apiKey').value.trim();localStorage.setItem('slf_gk',k);document.getElementById('keyLed').classList.toggle('on',k.length>=20);}
 
 // Three complete design styles — each swaps colors AND design tokens (shadows, glow, blur, gradients)
 var DESIGN_STYLES={
@@ -1047,7 +1047,7 @@ async function fetchAllKeywords(apiKey,productTitle){
   if(realData.walmart.length===0) needFallback.push('walmart');
   if(realData.ebay.length===0) needFallback.push('ebay');
 
-  if(needFallback.length>0 && apiKey && apiKey.indexOf('AIza')===0){
+  if(needFallback.length>0 && apiKey && apiKey.length>=20){
     try{
       var fbPrompt='You are an ecommerce keyword research expert.\nProduct: "'+productTitle+'"\n'
         +'Generate 10 real buyer search keywords (2-6 words each) for EACH of these platforms: '+needFallback.join(', ')+'.\n'
@@ -1088,7 +1088,7 @@ async function generateOffPageSEO(){
   var product=document.getElementById('productInput').value.trim();
   var store='';
 
-  if(!apiKey||apiKey.indexOf('AIza')!==0){showErr('⚠ API key daalo pehle.');return;}
+  if(!apiKey||apiKey.length<20){showErr('⚠ Gemini API key daalo pehle (topbar mein) — aistudio.google.com/apikey se milegi.');return;}
   if(!product||product.length<15){showErr('⚠ Pehle product details daalo.');return;}
 
   closeSidebarMobile();
@@ -1263,7 +1263,7 @@ async function generate(){
   localStorage.setItem('slf_po',policy);
   lastProduct=product; lastStore=store;
 
-  if(!apiKey||apiKey.indexOf('AIza')!==0){showErr('⚠ API key missing.');return;}
+  if(!apiKey||apiKey.length<20){showErr('⚠ Gemini API key missing — topbar ke field mein paste karein (aistudio.google.com/apikey).');return;}
   if(!product||product.length<15){showErr('⚠ Please paste product details.');return;}
 
   closeSidebarMobile();
