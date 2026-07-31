@@ -880,11 +880,57 @@ var VERO_PHRASES = [
   {t:'for use with', r:'med', why:'Compatibility wording — generally safer'},
   {t:'made in usa', r:'med', why:'Only claim if verifiably true'}
 ];
+var VERO_TERMS = [
+  {t:'lightning', r:'high', owner:'Apple', safe:'fast charging / for 8-pin devices'},
+  {t:'magsafe', r:'high', owner:'Apple', safe:'magnetic wireless charging'},
+  {t:'airplay', r:'high', owner:'Apple', safe:'wireless screen mirroring'},
+  {t:'facetime', r:'high', owner:'Apple', safe:'video calling'},
+  {t:'siri', r:'med', owner:'Apple', safe:'voice assistant'},
+  {t:'carplay', r:'med', owner:'Apple', safe:'in-car smartphone connectivity'},
+  {t:'jibbitz', r:'high', owner:'Crocs', safe:'shoe charms'},
+  {t:'popsocket', r:'high', owner:'PopSockets', safe:'phone grip holder'},
+  {t:'popgrip', r:'high', owner:'PopSockets', safe:'phone grip holder'},
+  {t:'squishmallow', r:'high', owner:'Jazwares', safe:'soft plush toy'},
+  {t:'velcro', r:'med', owner:'Velcro Companies', safe:'hook and loop fastener'},
+  {t:'teflon', r:'med', owner:'Chemours', safe:'non-stick coating'},
+  {t:'styrofoam', r:'med', owner:'DuPont', safe:'foam'},
+  {t:'plexiglass', r:'med', owner:'Rohm', safe:'clear acrylic'},
+  {t:'lycra', r:'med', owner:'The Lycra Company', safe:'spandex / elastane'},
+  {t:'kevlar', r:'med', owner:'DuPont', safe:'aramid fiber'},
+  {t:'gore-tex', r:'med', owner:'Gore', safe:'waterproof breathable membrane'},
+  {t:'goretex', r:'med', owner:'Gore', safe:'waterproof breathable membrane'},
+  {t:'kleenex', r:'med', owner:'Kimberly-Clark', safe:'facial tissue'},
+  {t:'band-aid', r:'med', owner:'Kenvue', safe:'adhesive bandage'},
+  {t:'bandaid', r:'med', owner:'Kenvue', safe:'adhesive bandage'},
+  {t:'q-tips', r:'med', owner:'Unilever', safe:'cotton swabs'},
+  {t:'chapstick', r:'med', owner:'Haleon', safe:'lip balm'},
+  {t:'vaseline', r:'med', owner:'Unilever', safe:'petroleum jelly'},
+  {t:'popsicle', r:'med', owner:'Unilever', safe:'ice pop'},
+  {t:'frisbee', r:'med', owner:'Wham-O', safe:'flying disc'},
+  {t:'hula hoop', r:'med', owner:'Wham-O', safe:'exercise hoop'},
+  {t:'ping-pong', r:'med', owner:'Escalade', safe:'table tennis'},
+  {t:'rollerblade', r:'med', owner:'Rollerblade', safe:'inline skates'},
+  {t:'jacuzzi', r:'med', owner:'Jacuzzi Brands', safe:'hot tub / whirlpool'},
+  {t:'thermos', r:'med', owner:'Thermos LLC', safe:'vacuum insulated flask'},
+  {t:'crock-pot', r:'med', owner:'Sunbeam', safe:'slow cooker'},
+  {t:'crockpot', r:'med', owner:'Sunbeam', safe:'slow cooker'},
+  {t:'tupperware', r:'med', owner:'Tupperware', safe:'food storage container'},
+  {t:'post-it', r:'med', owner:'3M', safe:'sticky notes'},
+  {t:'sharpie', r:'med', owner:'Newell', safe:'permanent marker'},
+  {t:'scotch tape', r:'med', owner:'3M', safe:'adhesive tape'},
+  {t:'bubble wrap', r:'med', owner:'Sealed Air', safe:'air cushion wrap'},
+  {t:'x-acto', r:'med', owner:'Elmer\'s', safe:'precision craft knife'},
+  {t:'dremel', r:'med', owner:'Bosch', safe:'rotary tool'},
+  {t:'sawzall', r:'med', owner:'Milwaukee', safe:'reciprocating saw'},
+  {t:'vise-grip', r:'med', owner:'Irwin', safe:'locking pliers'},
+  {t:'taser', r:'med', owner:'Axon', safe:'stun device'},
+  {t:'onesie', r:'med', owner:'Gerber', safe:'infant bodysuit'}
+];
 
 // Scan any text for VeRO risks. Returns {high:[], med:[], phrases:[]}
 function scanVero(text){
   var t = (text||'').toLowerCase();
-  var found = {high:[], med:[], phrases:[]};
+  var found = {high:[], med:[], phrases:[], terms:[]};
   function has(brand){
     // word-boundary match so "apple" doesn't match "pineapple"
     var esc = brand.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
@@ -893,6 +939,10 @@ function scanVero(text){
   VERO_HIGH.forEach(function(b){ if(has(b) && found.high.indexOf(b)===-1) found.high.push(b); });
   VERO_MED.forEach(function(b){ if(has(b) && found.med.indexOf(b)===-1) found.med.push(b); });
   VERO_PHRASES.forEach(function(p){ if(t.indexOf(p.t)>-1) found.phrases.push(p); });
+  found.terms=[];
+  if(typeof VERO_TERMS!=='undefined'){
+    VERO_TERMS.forEach(function(p){ if(has(p.t)) found.terms.push(p); });
+  }
   return found;
 }
 
@@ -1351,6 +1401,7 @@ async function generate(){
     +'7. Do NOT claim "authentic", "genuine", or "original" unless the source data supports it.\n'
     +'8. Write 100% original copy. Never copy a competitor\'s description text.\n'
     +'9. If the competitor title provided contains brand names your product is not, do NOT copy those brand names into your title.\n'
+    +'10. NEVER use trademarked feature/material/product-type words as generic descriptions — these trigger instant eBay blocks. Use the generic term instead: Lightning→"fast charging"/"for 8-pin devices", MagSafe→"magnetic wireless charging", Velcro→"hook and loop", Teflon→"non-stick", Styrofoam→"foam", Plexiglass→"acrylic", Kleenex→"facial tissue", Band-Aid→"adhesive bandage", Q-tips→"cotton swabs", Frisbee→"flying disc", Thermos→"vacuum insulated flask", Crock-Pot→"slow cooker", Tupperware→"food storage container", Bubble Wrap→"air cushion wrap", Jibbitz→"shoe charms", PopSocket→"phone grip", Squishmallow→"plush toy", Sawzall→"reciprocating saw", Onesie→"infant bodysuit". Only name such a term if the source data proves the item genuinely IS that branded product.\n'
     +'When unsure, choose the safer, brand-free wording. A slightly less keyword-rich listing that stays live beats an optimised listing that gets removed.\n\n'
     +'CRITICAL: NO backticks, NO markdown (##, **, *), NO --- separators. Plain text only.\n\n'
     +'Use EXACTLY these === markers:\n\n'
@@ -2131,8 +2182,10 @@ function renderVeroCheck(text){
   var highN=found.high.length, medN=found.med.length;
   var phraseHigh=found.phrases.filter(function(p){return p.r==='high';});
   var phraseMed=found.phrases.filter(function(p){return p.r==='med';});
-  var riskyHigh = highN + phraseHigh.length;
-  var riskyMed  = medN + phraseMed.length;
+  var termHigh=(found.terms||[]).filter(function(p){return p.r==='high';});
+  var termMed=(found.terms||[]).filter(function(p){return p.r==='med';});
+  var riskyHigh = highN + phraseHigh.length + termHigh.length;
+  var riskyMed  = medN + phraseMed.length + termMed.length;
 
   var status, color, rgb, icon;
   if(riskyHigh>0){ status='HIGH RISK'; color='#fb7185'; rgb='251,113,133'; icon='⛔'; }
@@ -2175,11 +2228,17 @@ function renderVeroCheck(text){
     phraseHigh.forEach(function(p){
       html+=riskRow(p.t,'high',p.why+'. Remove this wording.', veroLocations(p.t,S));
     });
+    termHigh.forEach(function(p){
+      html+=riskRow(p.t,'high','Trademarked term — registered to '+p.owner+'. eBay blocks this word. Use instead: "'+p.safe+'"', veroLocations(p.t,S));
+    });
     found.med.forEach(function(b){
       html+=riskRow(b,'med','Brand name detected. Fine if the item genuinely is this brand and legitimately sourced — otherwise remove it.', veroLocations(b,S));
     });
     phraseMed.forEach(function(p){
       html+=riskRow(p.t,'med',p.why+'.', veroLocations(p.t,S));
+    });
+    termMed.forEach(function(p){
+      html+=riskRow(p.t,'med','Trademarked term — registered to '+p.owner+'. Safer generic wording: "'+p.safe+'"', veroLocations(p.t,S));
     });
   }
 
