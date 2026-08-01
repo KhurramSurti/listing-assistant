@@ -1987,11 +1987,11 @@ function buildHtmlFromListing(listingText,storeName,themeName){
   var imgH='';
   if(imgs.length>0){
     imgH='<div class="section" style="text-align:center;">'
-      +'<img src="'+imgs[0]+'" alt="'+escHtml(headingText)+'" style="width:100%;max-width:520px;height:auto;border-radius:14px;border:1px solid '+T.bc+';box-shadow:0 10px 40px rgba(0,0,0,0.25);display:block;margin:0 auto;" onerror="this.style.display=\'none\'"/>';
+      +'<img src="'+imgs[0]+'" alt="'+escHtml(headingText)+'" style="width:100%;max-width:520px;height:auto;border-radius:14px;border:1px solid '+T.bc+';box-shadow:0 10px 40px rgba(0,0,0,0.25);display:block;margin:0 auto;"/>';
     if(imgs.length>1){
       imgH+='<div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">';
       for(var gi=1; gi<imgs.length; gi++){
-        imgH+='<img src="'+imgs[gi]+'" alt="Product view '+(gi+1)+'" style="width:31%;max-width:160px;min-width:110px;height:auto;border-radius:10px;border:1px solid '+T.rb+';" onerror="this.style.display=\'none\'"/>';
+        imgH+='<img src="'+imgs[gi]+'" alt="Product view '+(gi+1)+'" style="width:31%;max-width:160px;min-width:110px;height:auto;border-radius:10px;border:1px solid '+T.rb+';"/>';
       }
       imgH+='</div>';
     }
